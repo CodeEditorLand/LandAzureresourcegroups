@@ -5,7 +5,7 @@
 
 import { ResourceGroup } from '@azure/arm-resources';
 import { uiUtils } from '@microsoft/vscode-azext-azureutils';
-import { AzureWizard, createSubscriptionContext, IActionContext, IAzureQuickPickItem, nonNullProp, subscriptionExperience, UserCancelledError } from '@microsoft/vscode-azext-utils';
+import { AzureWizard, createSubscriptionContext, IActionContext, IAzureQuickPickItem, nonNullProp, NoResourceFoundError, subscriptionExperience, UserCancelledError } from '@microsoft/vscode-azext-utils';
 import { AzureResource, AzureSubscription } from '../../../../api/src/index';
 import { createResourceGroup } from '../../../api/DefaultAzureResourceProvider';
 import { ext } from '../../../extensionVariables';
@@ -31,7 +31,8 @@ export async function deleteResourceGroupV2(context: IActionContext, primaryNode
     let resourceGroupsToDelete: AzureResource[] = [];
 
     if (selectedResourceGroupNodes) {
-        subscription = selectedResourceGroupNodes[0].subscription;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        subscription = selectedResourceGroupNodes[0].subscription!;
         resourceGroupsToDelete = selectedResourceGroupNodes.map(node => nonNullProp(node, 'resourceGroup'));
     } else {
         ({ subscription, resourceGroupsToDelete } = await pickResourceGroups(context));
@@ -63,6 +64,10 @@ async function pickResourceGroups(context: IActionContext) {
     const subscription = await subscriptionExperience(context, ext.v2.api.resources.azureResourceTreeDataProvider);
     const client = await createResourceClient([context, createSubscriptionContext(subscription)]);
     const resourceGroups = await uiUtils.listAllIterator(client.resourceGroups.list());
+
+    if (!resourceGroups.length) {
+        throw new NoResourceFoundError();
+    }
 
     const picks = resourceGroups
         .map(rg => ({ label: nonNullProp(rg, 'name'), data: rg }))

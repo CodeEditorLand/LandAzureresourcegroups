@@ -3,28 +3,22 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AzExtTreeDataProvider, IAzExtOutputChannel } from "@microsoft/vscode-azext-utils";
-import { AppResourceResolver } from "@microsoft/vscode-azext-utils/hostapi";
-import { DiagnosticCollection, Disposable, Event, EventEmitter, ExtensionContext, TreeView } from "vscode";
+import { AzExtTreeDataProvider, IAzExtLogOutputChannel } from "@microsoft/vscode-azext-utils";
+import { AzExtResourceType } from "api/docs/vscode-azureresources-api";
+import { DiagnosticCollection, Disposable, env, ExtensionContext, TreeView, UIKind } from "vscode";
 import { AzureResourcesApiInternal } from "../hostapi.v2.internal";
 import { ActivityLogTreeItem } from "./activityLog/ActivityLogsTreeItem";
 import { TagFileSystem } from "./commands/tags/TagFileSystem";
+import { AzureResourcesServiceFactory } from "./services/AzureResourcesService";
+import { AzureSubscriptionProvider } from "./services/SubscriptionProvider";
+import { FocusViewTreeDataProvider } from "./tree/azure/FocusViewTreeDataProvider";
 import { ResourceGroupsItem } from "./tree/ResourceGroupsItem";
 import { TreeItemStateStore } from "./tree/TreeItemState";
-
-namespace extEmitters {
-    export let onDidChangeFocusedGroup: EventEmitter<void>;
-    export let onDidRegisterResolver: EventEmitter<AppResourceResolver>;
-}
-
-namespace extEvents {
-    export let onDidChangeFocusedGroup: Event<void>;
-    export let onDidRegisterResolver: Event<AppResourceResolver>;
-}
 
 export namespace extActions {
     export let refreshWorkspaceTree: (data?: ResourceGroupsItem | ResourceGroupsItem[] | null | undefined | void) => void;
     export let refreshAzureTree: (data?: ResourceGroupsItem | ResourceGroupsItem[] | null | undefined | void) => void;
+    export let refreshFocusTree: (data?: ResourceGroupsItem | ResourceGroupsItem[] | null | undefined | void) => void;
 }
 
 /**
@@ -41,7 +35,7 @@ export namespace ext {
     export let activityLogTree: AzExtTreeDataProvider;
     export let activityLogTreeItem: ActivityLogTreeItem;
     export let helpTree: AzExtTreeDataProvider;
-    export let outputChannel: IAzExtOutputChannel;
+    export let outputChannel: IAzExtLogOutputChannel;
     export let ignoreBundle: boolean | undefined;
     export const prefix: string = 'azureResourceGroups';
 
@@ -49,14 +43,43 @@ export namespace ext {
     export let diagnosticWatcher: Disposable | undefined;
     export let diagnosticCollection: DiagnosticCollection;
 
-    export const emitters = extEmitters;
-    export const events = extEvents;
-
     export let azureTreeState: TreeItemStateStore;
+
+    export let subscriptionProviderFactory: () => Promise<AzureSubscriptionProvider>;
+
+    // When debugging thru VS Code as a web environment, the UIKind is Desktop. However, if you sideload it into the browser, you must
+    // change this to UIKind.Web and then webpack it again
+    export const isWeb: boolean = env.uiKind === UIKind.Web;
 
     export namespace v2 {
         export let api: AzureResourcesApiInternal;
     }
 
+    export namespace testing {
+        export let overrideAzureServiceFactory: AzureResourcesServiceFactory | undefined;
+        export let overrideAzureSubscriptionProvider: (() => AzureSubscriptionProvider) | undefined;
+    }
+
+    export let focusedGroup: GroupingKind | undefined;
+    export let focusView: TreeView<unknown>;
+    export let focusViewTreeDataProvider: FocusViewTreeDataProvider;
+
     export const actions = extActions;
 }
+
+type ResourceTypeGrouping = {
+    kind: 'resourceType';
+    type: AzExtResourceType;
+}
+
+type ResourceGroupGrouping = {
+    kind: 'resourceGroup';
+    id: string;
+}
+
+type LocationGrouping = {
+    kind: 'location';
+    location: string;
+}
+
+export type GroupingKind = ResourceTypeGrouping | ResourceGroupGrouping | LocationGrouping;

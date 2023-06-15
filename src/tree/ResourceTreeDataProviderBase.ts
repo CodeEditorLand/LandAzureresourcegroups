@@ -7,7 +7,7 @@ import { callWithTelemetryAndErrorHandling, parseError } from '@microsoft/vscode
 import * as vscode from 'vscode';
 import { ResourceBase, ResourceModelBase } from '../../api/src/index';
 import { BranchDataItemCache } from './BranchDataItemCache';
-import { BranchDataItemWrapper } from './BranchDataProviderItem';
+import { BranchDataItemWrapper } from './BranchDataItemWrapper';
 import { InvalidItem } from './InvalidItem';
 import { ResourceGroupsItem } from './ResourceGroupsItem';
 import { TreeItemStateStore } from './TreeItemState';
@@ -51,7 +51,7 @@ export abstract class ResourceTreeDataProviderBase extends vscode.Disposable imp
         if (!!data) {
             // e was defined, either a single item or array
             // Make an array for consistency
-            const branchItems: unknown[] = Array.isArray(data) ? data : [data];
+            const branchItems: ResourceModelBase[] = Array.isArray(data) ? data : [data];
 
             for (const branchItem of branchItems) {
                 const rgItem = this.itemCache.getItemForBranchItem(branchItem);
@@ -90,7 +90,7 @@ export abstract class ResourceTreeDataProviderBase extends vscode.Disposable imp
                 if (child instanceof BranchDataItemWrapper) {
                     return child;
                 }
-                return this.state.wrapItemInStateHandling(child, (item) => this.notifyTreeDataChanged(item));
+                return this.state.wrapItemInStateHandling(child, (item) => this.onDidChangeTreeDataEmitter.fire(item));
             }
             return child;
         });

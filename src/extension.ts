@@ -5,9 +5,8 @@
 
 'use strict';
 
-import { registerAzureUtilsExtensionVariables } from '@microsoft/vscode-azext-azureutils';
-import { AzExtTreeDataProvider, AzureExtensionApiFactory, callWithTelemetryAndErrorHandling, createApiProvider, createAzExtOutputChannel, IActionContext, registerUIExtensionVariables } from '@microsoft/vscode-azext-utils';
-import type { AppResourceResolver } from '@microsoft/vscode-azext-utils/hostapi';
+import { registerAzureUtilsExtensionVariables, setupAzureLogger } from '@microsoft/vscode-azext-azureutils';
+import { AzExtTreeDataProvider, AzureExtensionApiFactory, callWithTelemetryAndErrorHandling, createApiProvider, createAzExtLogOutputChannel, IActionContext, registerUIExtensionVariables } from '@microsoft/vscode-azext-utils';
 import { apiUtils, GetApiOptions } from 'api/src/utils/apiUtils';
 import * as vscode from 'vscode';
 import { AzureResourcesApiInternal } from '../hostapi.v2.internal';
@@ -27,9 +26,12 @@ import { registerCommands } from './commands/registerCommands';
 import { registerTagDiagnostics } from './commands/tags/registerTagDiagnostics';
 import { TagFileSystem } from './commands/tags/TagFileSystem';
 import { ext } from './extensionVariables';
+import { createAzureAccountSubscriptionProviderFactory } from './services/DesktopSubscriptionProvider';
+import { createWebSubscriptionProviderFactory } from './services/WebAzureSubscriptionProvider';
 import { AzureResourceBranchDataProviderManager } from './tree/azure/AzureResourceBranchDataProviderManager';
 import { DefaultAzureResourceBranchDataProvider } from './tree/azure/DefaultAzureResourceBranchDataProvider';
 import { registerAzureTree } from './tree/azure/registerAzureTree';
+import { registerFocusTree } from './tree/azure/registerFocusTree';
 import { BranchDataItemCache } from './tree/BranchDataItemCache';
 import { HelpTreeItem } from './tree/HelpTreeItem';
 import { ResourceGroupsItem } from './tree/ResourceGroupsItem';
@@ -37,32 +39,41 @@ import { registerWorkspaceTree } from './tree/workspace/registerWorkspaceTree';
 import { WorkspaceDefaultBranchDataProvider } from './tree/workspace/WorkspaceDefaultBranchDataProvider';
 import { WorkspaceResourceBranchDataProviderManager } from './tree/workspace/WorkspaceResourceBranchDataProviderManager';
 
-export async function activateInternal(context: vscode.ExtensionContext, perfStats: { loadStartTime: number; loadEndTime: number }, ignoreBundle?: boolean): Promise<apiUtils.AzureExtensionApiProvider> {
+export async function activate(context: vscode.ExtensionContext, perfStats: { loadStartTime: number; loadEndTime: number }, ignoreBundle?: boolean): Promise<apiUtils.AzureExtensionApiProvider> {
+    // the entry point for vscode.dev is this activate, not main.js, so we need to instantiate perfStats here
+    // the perf stats don't matter for vscode because there is no main file to load-- we may need to see if we can track the download time
+    perfStats ||= { loadStartTime: Date.now(), loadEndTime: Date.now() };
+
     ext.context = context;
     ext.ignoreBundle = ignoreBundle;
-    ext.outputChannel = createAzExtOutputChannel('Azure Resource Groups', ext.prefix);
+    ext.outputChannel = createAzExtLogOutputChannel('Azure Resource Groups');
     context.subscriptions.push(ext.outputChannel);
+    context.subscriptions.push(setupAzureLogger(ext.outputChannel));
 
     registerUIExtensionVariables(ext);
     registerAzureUtilsExtensionVariables(ext);
 
     const refreshAzureTreeEmitter = new vscode.EventEmitter<void | ResourceGroupsItem | ResourceGroupsItem[] | null | undefined>();
     context.subscriptions.push(refreshAzureTreeEmitter);
+    const refreshFocusTreeEmitter = new vscode.EventEmitter<void | ResourceGroupsItem | ResourceGroupsItem[] | null | undefined>();
+    context.subscriptions.push(refreshFocusTreeEmitter);
     const refreshWorkspaceTreeEmitter = new vscode.EventEmitter<void | ResourceGroupsItem | ResourceGroupsItem[] | null | undefined>();
     context.subscriptions.push(refreshWorkspaceTreeEmitter);
 
     ext.actions.refreshWorkspaceTree = (data) => refreshWorkspaceTreeEmitter.fire(data);
     ext.actions.refreshAzureTree = (data) => refreshAzureTreeEmitter.fire(data);
+    ext.actions.refreshFocusTree = (data) => refreshFocusTreeEmitter.fire(data);
 
     await callWithTelemetryAndErrorHandling('azureResourceGroups.activate', async (activateContext: IActionContext) => {
         activateContext.telemetry.properties.isActivationEvent = 'true';
         activateContext.telemetry.measurements.mainFileLoad = (perfStats.loadEndTime - perfStats.loadStartTime) / 1000;
 
-        setupEvents(context);
+        ext.subscriptionProviderFactory = ext.isWeb ? createWebSubscriptionProviderFactory(context) : createAzureAccountSubscriptionProviderFactory();
 
         ext.tagFS = new TagFileSystem(ext.appResourceTree);
         context.subscriptions.push(vscode.workspace.registerFileSystemProvider(TagFileSystem.scheme, ext.tagFS));
         registerTagDiagnostics();
+
 
         const helpTreeItem: HelpTreeItem = new HelpTreeItem();
         ext.helpTree = new AzExtTreeDataProvider(helpTreeItem, 'ms-azuretools.loadMore');
@@ -100,6 +111,13 @@ export async function activateInternal(context: vscode.ExtensionContext, perfSta
         itemCache: azureResourcesBranchDataItemCache
     });
 
+    ext.focusViewTreeDataProvider = registerFocusTree(context, {
+        azureResourceProviderManager,
+        azureResourceBranchDataProviderManager,
+        refreshEvent: refreshFocusTreeEmitter.event,
+        itemCache: azureResourcesBranchDataItemCache
+    });
+
     const workspaceResourceTreeDataProvider = registerWorkspaceTree(context, {
         workspaceResourceProviderManager,
         workspaceResourceBranchDataProviderManager,
@@ -108,7 +126,7 @@ export async function activateInternal(context: vscode.ExtensionContext, perfSta
 
     const v2ApiFactory: AzureExtensionApiFactory<AzureResourcesApiInternal> = {
         apiVersion: '2.0.0',
-        createApi: (options: GetApiOptions) => {
+        createApi: (options?: GetApiOptions) => {
             return createWrappedAzureResourcesExtensionApi(
                 {
                     apiVersion: '2.0.0',
@@ -124,7 +142,7 @@ export async function activateInternal(context: vscode.ExtensionContext, perfSta
                         registerActivity
                     },
                 },
-                options.extensionId ?? 'unknown'
+                options?.extensionId ?? 'unknown'
             );
         }
     };
@@ -147,7 +165,7 @@ export async function activateInternal(context: vscode.ExtensionContext, perfSta
                     registerApplicationResourceResolver,
                     registerWorkspaceResourceProvider,
                     registerActivity,
-                    pickAppResource: createCompatibilityPickAppResource(azureResourcesBranchDataItemCache),
+                    pickAppResource: createCompatibilityPickAppResource(),
                 }),
             },
             v2ApiFactory,
@@ -155,16 +173,6 @@ export async function activateInternal(context: vscode.ExtensionContext, perfSta
     );
 }
 
-export function deactivateInternal(): void {
+export function deactivate(): void {
     ext.diagnosticWatcher?.dispose();
-}
-
-function setupEvents(context: vscode.ExtensionContext): void {
-    // Event emitter for when a group is focused/unfocused
-    context.subscriptions.push(ext.emitters.onDidChangeFocusedGroup = new vscode.EventEmitter());
-    ext.events.onDidChangeFocusedGroup = ext.emitters.onDidChangeFocusedGroup.event;
-
-    // Event emitter for when an AppResourceResolver is registered
-    context.subscriptions.push(ext.emitters.onDidRegisterResolver = new vscode.EventEmitter<AppResourceResolver>());
-    ext.events.onDidRegisterResolver = ext.emitters.onDidRegisterResolver.event;
 }

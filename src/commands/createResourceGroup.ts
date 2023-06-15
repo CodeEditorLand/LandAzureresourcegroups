@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IResourceGroupWizardContext, LocationListStep, ResourceGroupCreateStep, ResourceGroupNameStep } from '@microsoft/vscode-azext-azureutils';
-import { AzureWizard, AzureWizardExecuteStep, AzureWizardPromptStep, createSubscriptionContext, ExecuteActivityContext, IActionContext, nonNullProp, subscriptionExperience } from '@microsoft/vscode-azext-utils';
+import { AzureWizard, AzureWizardExecuteStep, AzureWizardPromptStep, ExecuteActivityContext, IActionContext, createSubscriptionContext, nonNullProp, subscriptionExperience } from '@microsoft/vscode-azext-utils';
 import { window } from 'vscode';
 import { AzureSubscription } from '../../api/src/index';
 import { ext } from '../extensionVariables';
@@ -32,10 +32,10 @@ export async function createResourceGroup(context: IActionContext, node?: Subscr
     const wizard: AzureWizard<IResourceGroupWizardContext & ExecuteActivityContext> = new AzureWizard(wizardContext, { title, promptSteps, executeSteps });
     await wizard.prompt();
     const newResourceGroupName = nonNullProp(wizardContext, 'newResourceGroupName');
-    wizardContext.activityTitle = localize('createResourceGroup', 'Create Resource Group "{0}"', newResourceGroupName);
+    wizardContext.activityTitle = localize('createResourceGroup', 'Create resource group "{0}"', newResourceGroupName);
     await wizard.execute();
     if (!wizardContext.suppressNotification) {
         void window.showInformationMessage(localize('createdRg', 'Created resource group "{0}".', newResourceGroupName));
     }
-    ext.azureTreeState.notifyChildrenChanged(subscription.subscriptionId);
+    ext.azureTreeState.notifyChildrenChanged(`/subscriptions/${subscription.subscriptionId}`);
 }

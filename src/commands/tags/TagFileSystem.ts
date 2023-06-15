@@ -38,8 +38,8 @@ export class ResourceTags implements ITagsModel {
     readonly displayName: string = this.resource.name;
     readonly displayType: ITagsModel['displayType'];
 
-    cTime: number;
-    mTime: number;
+    cTime!: number;
+    mTime!: number;
 
     async getTags(): Promise<Tags> {
         return await callWithTelemetryAndErrorHandling('getTags', async (context): Promise<Tags | undefined> => {
@@ -76,7 +76,10 @@ export class TagFileSystem extends AzExtTreeFileSystem<ITagsModel> {
     }
 
     public async writeFileImpl(context: IActionContext, model: ITagsModel, content: Uint8Array, originalUri: Uri): Promise<void> {
-        const text: string = content.toString();
+        // weird issue when in vscode.dev, the content Uint8Array has a giant byteOffset that causes it impossible to decode
+        // so re-form the buffer with 0 byteOffset
+        const buf = Buffer.from(content, 0)
+        const text: string = buf.toString('utf-8');
 
         const diagnostics: Diagnostic[] = languages.getDiagnostics(originalUri).filter(d => d.severity === DiagnosticSeverity.Error);
         if (diagnostics.length > 0) {
@@ -105,7 +108,7 @@ export class TagFileSystem extends AzExtTreeFileSystem<ITagsModel> {
             const update: MessageItem = { title: localize('update', 'Update') };
             await context.ui.showWarningMessage(confirmMessage, { modal: true }, update);
 
-            const tags: {} = <{}>jsonc.parse(text);
+            const tags: { [key: string]: string } = <{}>jsonc.parse(text);
 
             // remove example tag
             if (Object.keys(tags).includes(insertKeyHere) && tags[insertKeyHere] === insertValueHere) {

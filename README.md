@@ -12,6 +12,10 @@ View and manage Azure resources directly from VS Code.
 
 > Sign up today for your free Azure account and receive 12 months of free popular services, $200 free credit and 25+ always free services 👉 [Start Free](https://azure.microsoft.com/free/open-source).
 
+## Support for [vscode.dev](https://vscode.dev/)
+
+The Azure Resources extension fully supports running on [vscode.dev](https://vscode.dev/) and [github.dev](http://github.dev/). This means you can use the Azure Resources extension to manage your Azure resources directly from your browser! Note that this does not require the Azure Accounts extension and uses VS Code's built-in authentication provider.
+
 ## Features
 
 ### Resource and Workspace views
@@ -20,9 +24,9 @@ Use the Resources explorer to create and manage Azure resources. Use the Workspa
 
 ![Azure explorer](resources/readme/explorerGraphic.png)
 
-### Grouping and Focusing
+### Grouping
 
-Change the way resources are grouped to fit your workflow and focus on the resources that are most important for your current workspace.
+Change the way resources are grouped to fit your workflow.
 
 ![Grouping](resources/readme/groupingGraphic.png)
 
@@ -48,6 +52,8 @@ Install these extensions to enable additional resource-specific features.
 * [Azure Databases](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-cosmosdb)
 * [Azure Storage](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurestorage)
 * [Azure Virtual Machines](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurevirtualmachines)
+* [Azure Spring Apps](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-azurespringcloud)
+* [Azure Logic Apps](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurelogicapps)
 
 <!-- region exclude-from-marketplace -->
 

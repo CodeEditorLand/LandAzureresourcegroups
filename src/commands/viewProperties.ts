@@ -4,7 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { azureResourceExperience, IActionContext, openReadOnlyJson } from '@microsoft/vscode-azext-utils';
-import { randomUUID } from 'crypto';
+import { ViewPropertiesModelAsync } from 'api/docs/vscode-azureresources-api';
+import { v4 as uuidv4 } from "uuid";
 import { ViewPropertiesModel } from '../../api/src/index';
 import { ext } from '../extensionVariables';
 import { ResourceGroupsItem } from '../tree/ResourceGroupsItem';
@@ -19,9 +20,15 @@ export async function viewProperties(context: IActionContext, node?: ResourceGro
         throw new Error(localize('commands.viewProperties.noProperties', 'The selected resource has no properties to view.'));
     }
 
-    await openReadOnlyJson({ fullId: node.id ?? randomUUID(), label: node.viewProperties.label }, node.viewProperties.data);
+    // support both async and sync viewProperties models
+    const data = isAsyncViewPropertiesModel(node.viewProperties) ? await node.viewProperties.getData() : node.viewProperties.data;
+    await openReadOnlyJson({ fullId: node.id ?? uuidv4(), label: node.viewProperties.label }, data);
 }
 
-function hasViewProperties(node: unknown): node is { viewProperties: ViewPropertiesModel } {
+export function hasViewProperties(node: unknown): node is { viewProperties: ViewPropertiesModel } {
     return !!(node as { viewProperties: ViewPropertiesModel })?.viewProperties;
+}
+
+function isAsyncViewPropertiesModel(viewProperties: ViewPropertiesModel): viewProperties is ViewPropertiesModel & ViewPropertiesModelAsync {
+    return 'getData' in viewProperties;
 }

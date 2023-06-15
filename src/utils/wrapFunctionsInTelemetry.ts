@@ -15,7 +15,7 @@ function stringifyError(e: unknown): string {
     return str;
 }
 
-function handleError(e: unknown, functionName: string): void {
+function handleError(e: unknown, functionName: string): never {
     ext.outputChannel.appendLog(`Internal error: '${functionName}' threw an exception\n\t${stringifyError(e)}`);
     if (e instanceof Error) {
         // shortened message since it might be displayed on the tree
@@ -40,6 +40,8 @@ type AsyncFunctions<T extends Record<string, (...args: unknown[]) => unknown | P
     [P in keyof T]: AsyncFunction<T[P]>;
 };
 
+type ObjectWithFunctions = Record<symbol, (...args: unknown[]) => unknown | Promise<unknown>>;
+
 type AsyncFunction<T extends (...args: unknown[]) => Promise<unknown> | unknown> = (...args: Parameters<T>) => ReturnType<T> extends Promise<infer TPromise> ? Promise<TPromise> : Promise<ReturnType<T>>;
 
 /**
@@ -52,10 +54,10 @@ type AsyncFunction<T extends (...args: unknown[]) => Promise<unknown> | unknown>
  * context.errorHandling.suppressReportIssue = true;
  * ```
  */
-export function wrapFunctionsInTelemetry<TFunctions extends Record<string, (...args: unknown[]) => unknown | Promise<unknown>>>(functions: TFunctions, options?: WrapFunctionsInTelemetryOptions): AsyncFunctions<TFunctions> {
-    const wrappedFunctions = {};
+export function wrapFunctionsInTelemetry<TFunctions extends ObjectWithFunctions>(functions: TFunctions, options?: WrapFunctionsInTelemetryOptions): AsyncFunctions<TFunctions> {
+    const wrappedFunctions: Record<string, (...args: unknown[]) => unknown> = {};
 
-    Object.entries(functions).forEach(([functionName, func]) => {
+    Object.entries(functions as Record<string, (...args: unknown[]) => unknown>).forEach(([functionName, func]) => {
         wrappedFunctions[functionName] = (...args: Parameters<typeof func>): ReturnType<typeof func> => {
             return callWithTelemetryAndErrorHandling((options?.callbackIdPrefix ?? '') + functionName, async (context) => {
                 context.errorHandling.rethrow = true;
@@ -84,10 +86,10 @@ export function wrapFunctionsInTelemetry<TFunctions extends Record<string, (...a
  * context.errorHandling.suppressReportIssue = true;
  * ```
  */
-export function wrapFunctionsInTelemetrySync<TFunctions extends Record<string, (...args: unknown[]) => unknown>>(functions: TFunctions, options?: WrapFunctionsInTelemetryOptions): TFunctions {
-    const wrappedFunctions = {};
+export function wrapFunctionsInTelemetrySync<TFunctions extends ObjectWithFunctions>(functions: TFunctions, options?: WrapFunctionsInTelemetryOptions): TFunctions {
+    const wrappedFunctions: Record<string, (...args: unknown[]) => unknown> = {};
 
-    Object.entries(functions).forEach(([functionName, func]) => {
+    Object.entries(functions as Record<string, (...args: unknown[]) => unknown>).forEach(([functionName, func]) => {
         wrappedFunctions[functionName] = (...args: Parameters<typeof func>): ReturnType<typeof func> => {
             return callWithTelemetryAndErrorHandlingSync((options?.callbackIdPrefix ?? '') + functionName, (context) => {
                 context.errorHandling.rethrow = true;

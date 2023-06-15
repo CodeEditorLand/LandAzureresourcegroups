@@ -9,7 +9,7 @@ import { ResourceTags } from '../../commands/tags/TagFileSystem';
 import { ext } from '../../extensionVariables';
 import { createPortalUrl } from '../../utils/v2/createPortalUrl';
 import { BranchDataItemCache } from '../BranchDataItemCache';
-import { BranchDataItemOptions, BranchDataItemWrapper } from '../BranchDataProviderItem';
+import { BranchDataItemOptions, BranchDataItemWrapper } from '../BranchDataItemWrapper';
 import { ResourceGroupsItem } from '../ResourceGroupsItem';
 
 export class AzureResourceItem<T extends AzureResource> extends BranchDataItemWrapper {
@@ -54,5 +54,9 @@ export class AzureResourceItem<T extends AzureResource> extends BranchDataItemWr
 export type ResourceItemFactory<T extends AzureResource> = (resource: T, branchItem: ResourceModelBase, branchDataProvider: BranchDataProvider<ResourceBase, ResourceModelBase>, parent?: ResourceGroupsItem, options?: BranchDataItemOptions) => AzureResourceItem<T>;
 
 export function createResourceItemFactory<T extends AzureResource>(itemCache: BranchDataItemCache): ResourceItemFactory<T> {
-    return (resource, branchItem, branchDataProvider, parent, options) => new AzureResourceItem(resource, branchItem, branchDataProvider, itemCache, parent, options);
+    return (resource, branchItem, branchDataProvider, parent, options) =>
+        itemCache.createOrGetItem(
+            branchItem,
+            () => new AzureResourceItem(resource, branchItem, branchDataProvider, itemCache, parent, options)
+        );
 }
