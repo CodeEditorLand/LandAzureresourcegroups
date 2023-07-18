@@ -3,10 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { callWithTelemetryAndErrorHandling, createSubscriptionContext, IActionContext, ISubscriptionContext } from "@microsoft/vscode-azext-utils";
+import { AzExtTreeDataProvider, callWithTelemetryAndErrorHandling, createSubscriptionContext, IActionContext, ISubscriptionContext } from "@microsoft/vscode-azext-utils";
 import * as vscode from "vscode";
 import { AzureSubscription } from "../../../api/src/index";
 import { AzureResourceProviderManager } from "../../api/ResourceProviderManagers";
+import { ext } from "../../extensionVariables";
 import { settingUtils } from "../../utils/settingUtils";
 import { treeUtils } from "../../utils/treeUtils";
 import { createPortalUrl } from "../../utils/v2/createPortalUrl";
@@ -27,9 +28,14 @@ export class SubscriptionItem implements ResourceGroupsItem {
             ...subscription
         };
 
+        this.treeDataProvider = ext.appResourceTree;
+
         this.id = `/subscriptions/${this.subscription.subscriptionId}`;
         this.portalUrl = createPortalUrl(this.subscription, this.id);
     }
+
+    // For v1.5 compat: Extensions expect items to have a treeDataProvider property.
+    public readonly treeDataProvider: AzExtTreeDataProvider;
 
     public readonly portalUrl: vscode.Uri;
 

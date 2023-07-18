@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { createContextValue, ISubscriptionContext, TreeItemIconPath } from '@microsoft/vscode-azext-utils';
+import { AzExtTreeDataProvider, createContextValue, ISubscriptionContext, TreeItemIconPath } from '@microsoft/vscode-azext-utils';
 import * as vscode from 'vscode';
 import { AzExtResourceType, AzureResource, AzureResourceBranchDataProvider, AzureResourceModel, AzureSubscription } from '../../../../api/src/index';
 import { ext } from '../../../extensionVariables';
@@ -36,6 +36,9 @@ export class GroupingItem implements ResourceGroupsItem {
     private readonly iconPath?: TreeItemIconPath;
     private readonly options?: GroupingItemDisplayOptions;
 
+    // For v1.5 compat: Extensions expect items to have a treeDataProvider property.
+    public readonly treeDataProvider: AzExtTreeDataProvider;
+
     constructor(options: GroupingItemOptions, factoryOptions: GroupingItemFactoryOptions) {
         this.resourceItemFactory = factoryOptions.resourceItemFactory;
         this.branchDataProviderFactory = factoryOptions.branchDataProviderFactory;
@@ -53,6 +56,8 @@ export class GroupingItem implements ResourceGroupsItem {
             ...this.context.subscriptionContext,
             ...this.context.subscription,
         } : undefined;
+
+        this.treeDataProvider = ext.appResourceTree;
 
         if (this.context?.subscription) {
             this.id = `/subscriptions/${this.context?.subscriptionContext.subscriptionId}/groupings/${this.label}`;
