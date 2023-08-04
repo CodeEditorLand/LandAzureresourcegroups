@@ -32,6 +32,7 @@ export * from './src/services/AzureResourcesService';
 // Export activate/deactivate for main.js
 export { activate, deactivate } from './src/extension';
 export * from './src/extensionVariables';
+export * from './src/hostapi.v2.internal';
 export * from './src/tree/BranchDataItemWrapper';
 export * from './src/tree/InvalidItem';
 export { ResourceGroupsItem } from './src/tree/ResourceGroupsItem';
@@ -43,4 +44,5 @@ export * from './src/tree/azure/grouping/LocationGroupingItem';
 export * from './src/tree/azure/grouping/ResourceGroupGroupingItem';
 export * from './src/tree/azure/grouping/ResourceTypeGroupingItem';
 export * from './src/utils/wrapFunctionsInTelemetry';
+export { AzureLoginStatus, AzureSession, CloudShell } from './src/azure-account.api';
 // NOTE: The auto-fix action "source.organizeImports" does weird things with this file, but there doesn't seem to be a way to disable it on a per-file basis so we'll just let it happen
