@@ -3,27 +3,27 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from "assert";
-import { isWrapper, Wrapper } from "../../extension.bundle";
+import * as assert from 'assert';
+import { isWrapper, Wrapper } from '../../extension.bundle';
 
-suite("isWrapper", () => {
-	test("Not a Wrapper", () => {
-		assert.strictEqual(isWrapper(undefined), false);
-		assert.strictEqual(isWrapper(null), false);
-		assert.strictEqual(isWrapper(1), false);
-		assert.strictEqual(isWrapper(false), false);
-		assert.strictEqual(isWrapper("foo"), false);
-		assert.strictEqual(isWrapper({}), false);
-		assert.strictEqual(isWrapper({ unwrap: false }), false);
-	});
+suite('isWrapper', () => {
 
-	test("Wrapper", () => {
-		const actualWrapper: Wrapper = {
-			unwrap: <T>() => {
-				return undefined as unknown as T;
-			},
-		};
+    test('Not a Wrapper', () => {
+        assert.strictEqual(isWrapper(undefined), false);
+        assert.strictEqual(isWrapper(null), false);
+        assert.strictEqual(isWrapper(1), false);
+        assert.strictEqual(isWrapper(false), false);
+        assert.strictEqual(isWrapper('foo'), false);
+        assert.strictEqual(isWrapper({}), false);
+        assert.strictEqual(isWrapper({ unwrap: false }), false);
+    });
 
-		assert.strictEqual(isWrapper(actualWrapper), true);
-	});
+    test('Wrapper', () => {
+        const actualWrapper: Wrapper = {
+            unwrap: <T>() => { return undefined as unknown as T },
+        };
+
+        assert.strictEqual(isWrapper(actualWrapper), true);
+    });
+
 });

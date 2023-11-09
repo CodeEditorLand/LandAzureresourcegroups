@@ -1,42 +1,26 @@
 {
-	"name": "@microsoft/vscode-azureresources-api",
-	"version": "0.0.1",
-	"private": "false",
-	"description": "Type declarations and client library for the Azure Resources extension API",
-	"homepage": "https://github.com/CodeEditorLand/CodeEditorLand#readme",
-	"bugs": {
-		"url": "https://github.com/CodeEditorLand/CodeEditorLand/issues"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/CodeEditorLand/CodeEditorLand.git",
-		"directory": "api"
-	},
-	"license": "MIT",
-	"author": {
-		"name": "Nikola Hristov",
-		"email": "nikola@nikolahristov.tech",
-		"url": "https://nikolahristov.tech"
-	},
-	"publisher": "playform",
-	"type": "module",
-	"main": "out/src/index.js",
-	"types": "dist/vscode-azureresources-api.d.ts",
-	"scripts": {
-		"api-extractor": "npm run build && api-extractor run",
-		"build": "tsc -p ./",
-		"prepack": "npm run api-extractor",
-		"prepublishOnly": "TypeScriptESBuild 'Source/**/*.ts'"
-	},
-	"devDependencies": {
-		"@types/node": "20.8.9",
-		"@types/vscode": "1.83.1",
-		"typescript-esbuild": "0.3.1"
-	},
-	"peerDependencies": {
-		"@azure/ms-rest-azure-env": "2.0.0"
-	},
-	"publishConfig": {
-		"access": "public"
-	}
+    "name": "@microsoft/vscode-azureresources-api",
+    "version": "2.2.0",
+    "description": "Type declarations and client library for the Azure Resources extension API",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Microsoft/vscode-azureresourcegroups",
+        "directory": "api"
+    },
+    "main": "out/src/index.js",
+    "types": "dist/vscode-azureresources-api.d.ts",
+    "scripts": {
+        "prepack": "npm run api-extractor",
+        "api-extractor": "npm run build && api-extractor run",
+        "build": "tsc -p ./"
+    },
+    "author": "Microsoft",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^16.0.0",
+        "@types/vscode": "^1.64.0"
+    },
+    "peerDependencies": {
+        "@azure/ms-rest-azure-env": "^2.0.0"
+    }
 }
