@@ -587,7 +587,7 @@
         "api-extractor": "tsc -p ./api && api-extractor run -c ./api/api-extractor.json"
     },
     "devDependencies": {
-        "@microsoft/api-extractor": "7.38.2",
+        "@microsoft/api-extractor": "7.38.3",
         "@microsoft/eslint-config-azuretools": "0.2.1",
         "@microsoft/vscode-azext-dev": "2.0.2",
         "@types/gulp": "4.0.17",
