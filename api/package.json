@@ -1,26 +1,41 @@
 {
-    "name": "@microsoft/vscode-azureresources-api",
-    "version": "2.2.1",
-    "description": "Type declarations and client library for the Azure Resources extension API",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/Microsoft/vscode-azureresourcegroups",
-        "directory": "api"
-    },
-    "main": "out/src/index.js",
-    "types": "dist/vscode-azureresources-api.d.ts",
-    "scripts": {
-        "prepack": "npm run api-extractor",
-        "api-extractor": "npm run build && api-extractor run",
-        "build": "tsc -p ./"
-    },
-    "author": "Microsoft",
-    "license": "MIT",
-    "devDependencies": {
-        "@types/node": "^16.0.0",
-        "@types/vscode": "^1.64.0"
-    },
-    "peerDependencies": {
-        "@azure/ms-rest-azure-env": "^2.0.0"
-    }
+	"name": "@microsoft/vscode-azureresources-api",
+	"version": "0.0.1",
+	"private": false,
+	"description": "Type declarations and client library for the Azure Resources extension API",
+	"keywords": [
+		"land"
+	],
+	"homepage": "HTTPS://GitHub.Com/CodeEditorLand/LandAzureResourceGroups#readme",
+	"bugs": {
+		"url": "HTTPS://GitHub.Com/CodeEditorLand/LandAzureResourceGroups/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+HTTPS://github.com/CodeEditorLand/LandAzureResourceGroups.git"
+	},
+	"license": "SEE LICENSE IN LICENSE",
+	"author": {
+		"name": "🌆 — Land —",
+		"email": "Land@PlayForm.Cloud",
+		"url": "HTTPS://Land.PlayForm.Cloud"
+	},
+	"type": "module",
+	"main": "out/src/index.js",
+	"types": "dist/vscode-azureresources-api.d.ts",
+	"scripts": {
+		"Document": "Document 'Source/**/*.ts'",
+		"api-extractor": "npm run build && api-extractor run",
+		"build": "tsc -p ./",
+		"prepack": "npm run api-extractor",
+		"prepublishOnly": "Build 'Source/**/*.ts'"
+	},
+	"devDependencies": {
+		"@playform/build": "0.0.7",
+		"@playform/document": "0.0.6",
+		"@types/node": "^16.0.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
 }
