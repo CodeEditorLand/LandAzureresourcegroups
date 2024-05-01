@@ -586,18 +586,18 @@
 		"onWalkthrough:azure-get-started"
 	],
 	"dependencies": {
-		"buffer": "^6.0.3",
-		"jsonc-parser": "^2.2.1",
-		"uuid": "^9.0.0"
+		"buffer": "6.0.3",
+		"jsonc-parser": "3.2.1",
+		"uuid": "9.0.1"
 	},
 	"devDependencies": {
 		"@playform/build": "0.0.7",
 		"@playform/document": "0.0.6",
-		"@types/node": "18.19.x",
-		"@types/semver": "^7.3.12",
-		"@types/uuid": "^9.0.1",
-		"chokidar": "^3.6.0",
-		"glob": "^7.1.6"
+		"@types/node": "20.12.x",
+		"@types/semver": "7.5.8",
+		"@types/uuid": "9.0.8",
+		"chokidar": "3.6.0",
+		"glob": "10.3.12"
 	},
 	"publishConfig": {
 		"access": "public"
