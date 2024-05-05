@@ -3,33 +3,37 @@
 	"version": "0.0.1",
 	"private": false,
 	"description": "Type declarations and client library for the Azure Resources extension API",
-	"homepage": "https://github.com/CodeEditorLand/Foundation#readme",
+	"keywords": [
+		"land"
+	],
+	"homepage": "HTTPS://GitHub.Com/CodeEditorLand/LandAzureResourceGroups#readme",
 	"bugs": {
-		"url": "https://github.com/CodeEditorLand/Foundation/issues"
+		"url": "HTTPS://GitHub.Com/CodeEditorLand/LandAzureResourceGroups/issues"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/CodeEditorLand/Foundation.git"
+		"url": "git+HTTPS://github.com/CodeEditorLand/LandAzureResourceGroups.git"
 	},
 	"license": "SEE LICENSE IN LICENSE",
 	"author": {
-		"name": "Playform",
-		"email": "Hello@Playform.Cloud",
-		"url": "https://playform.cloud"
+		"name": "🌆 — Land —",
+		"email": "Land@PlayForm.Cloud",
+		"url": "HTTPS://Land.PlayForm.Cloud"
 	},
 	"type": "module",
 	"main": "out/src/index.js",
 	"types": "dist/vscode-azureresources-api.d.ts",
 	"scripts": {
+		"Document": "Document 'Source/**/*.ts'",
 		"api-extractor": "npm run build && api-extractor run",
 		"build": "tsc -p ./",
 		"prepack": "npm run api-extractor",
-		"prepublishOnly": "TypeScriptESBuild 'Source/**/*.ts'"
+		"prepublishOnly": "Build 'Source/**/*.ts'"
 	},
 	"devDependencies": {
-		"@types/node": "^16.0.0",
-		"@types/vscode": "^1.64.0",
-		"typescript-esbuild": "0.4.5"
+		"@playform/build": "0.0.7",
+		"@playform/document": "0.0.6",
+		"@types/node": "20.12.7"
 	},
 	"publishConfig": {
 		"access": "public"
