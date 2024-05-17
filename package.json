@@ -1,27 +1,7 @@
 {
 	"name": "vscode-azureresourcegroups",
 	"displayName": "Azure Resources",
-	"version": "0.0.1",
-	"private": false,
 	"description": "%azureResourceGroups.description%",
-	"keywords": [
-		"land"
-	],
-	"homepage": "HTTPS://GitHub.Com/CodeEditorLand/LandAzureResourceGroups#readme",
-	"bugs": {
-		"url": "HTTPS://GitHub.Com/CodeEditorLand/LandAzureResourceGroups/issues"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+HTTPS://github.com/CodeEditorLand/LandAzureResourceGroups.git"
-	},
-	"license": "SEE LICENSE IN LICENSE",
-	"author": {
-		"name": "🛬 Land —",
-		"email": "Land@PlayForm.Cloud",
-		"url": "HTTPS://Land.PlayForm.Cloud"
-	},
-	"type": "module",
 	"main": "./main.js",
 	"browser": "./dist/web/extension.bundle.js",
 	"scripts": {
@@ -592,15 +572,11 @@
 	},
 	"devDependencies": {
 		"@playform/build": "0.0.7",
-		"@playform/document": "0.0.6",
 		"@types/node": "20.12.x",
 		"@types/semver": "7.5.8",
 		"@types/uuid": "9.0.8",
 		"chokidar": "3.6.0",
 		"glob": "10.3.12"
-	},
-	"publishConfig": {
-		"access": "public"
 	},
 	"icon": "resources/resourceGroup.png",
 	"galleryBanner": {
