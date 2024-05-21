@@ -9,6 +9,6 @@
 		"prepack": "npm run api-extractor"
 	},
 	"devDependencies": {
-		"@types/node": "16.0.0"
+		"@types/node": "20.12.12"
 	}
 }
