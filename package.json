@@ -590,22 +590,22 @@
 		}
 	},
 	"dependencies": {
-		"buffer": "^6.0.3",
-		"jsonc-parser": "^3.2.1",
-		"node-fetch": "^3.3.2",
-		"request-promise": "^4.2.6",
-		"uuid": "^10.0.0",
-		"ws": "^8.17.0"
+		"buffer": "6.0.3",
+		"jsonc-parser": "3.2.1",
+		"node-fetch": "3.3.2",
+		"request-promise": "4.2.6",
+		"uuid": "10.0.0",
+		"ws": "8.17.0"
 	},
 	"description": "%azureResourceGroups.description%",
 	"devDependencies": {
 		"@types/node": "20.14.x",
-		"@types/request-promise": "^4.1.51",
-		"@types/semver": "^7.5.8",
-		"@types/uuid": "^9.0.8",
-		"@types/ws": "^8.5.10",
-		"chokidar": "^3.6.0",
-		"glob": "^10.4.1"
+		"@types/request-promise": "4.1.51",
+		"@types/semver": "7.5.8",
+		"@types/uuid": "9.0.8",
+		"@types/ws": "8.5.10",
+		"chokidar": "3.6.0",
+		"glob": "10.4.1"
 	},
 	"displayName": "Azure Resources",
 	"galleryBanner": {
