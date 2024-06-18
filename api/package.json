@@ -17,8 +17,8 @@
     "author": "Microsoft",
     "license": "MIT",
     "devDependencies": {
-        "@types/node": "^16.0.0",
-        "@types/vscode": "^1.64.0"
+        "@types/node": "^20.14.5",
+        "@types/vscode": "^1.90.0"
     },
     "peerDependencies": {
         "@azure/ms-rest-azure-env": "^2.0.0"
