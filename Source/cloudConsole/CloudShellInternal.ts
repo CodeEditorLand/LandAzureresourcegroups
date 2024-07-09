@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ReadStream } from "node:fs";
+import { ReadStream } from "fs";
 import { CancellationToken, Event, Progress, Terminal, TerminalProfile } from "vscode";
 
 export interface UploadOptions {
