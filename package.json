@@ -604,21 +604,21 @@
 		"onTerminalProfile:azureResourceGroups.cloudShellPowerShell"
 	],
 	"dependencies": {
-		"buffer": "^6.0.3",
-		"jsonc-parser": "^2.2.1",
-		"node-fetch": "^3.3.2",
-		"request-promise": "^4.2.6",
-		"uuid": "^9.0.0",
-		"ws": "^8.17.1"
+		"buffer": "6.0.3",
+		"jsonc-parser": "2.2.1",
+		"node-fetch": "3.3.2",
+		"request-promise": "4.2.6",
+		"uuid": "9.0.0",
+		"ws": "8.17.1"
 	},
 	"devDependencies": {
 		"@types/node": "18.19.x",
-		"@types/request-promise": "^4.1.51",
-		"@types/semver": "^7.3.12",
-		"@types/uuid": "^9.0.1",
-		"@types/ws": "^8.5.10",
-		"chokidar": "^3.6.0",
-		"glob": "^7.1.6"
+		"@types/request-promise": "4.1.51",
+		"@types/semver": "7.3.12",
+		"@types/uuid": "9.0.1",
+		"@types/ws": "8.5.10",
+		"chokidar": "3.6.0",
+		"glob": "7.1.6"
 	},
 	"icon": "resources/resourceGroup.png",
 	"galleryBanner": {
