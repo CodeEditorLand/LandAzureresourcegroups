@@ -1,18 +1,1 @@
-{
-	"name": "@microsoft/vscode-azureresources-api",
-	"description": "Type declarations and client library for the Azure Resources extension API",
-	"main": "out/src/index.js",
-	"types": "dist/vscode-azureresources-api.d.ts",
-	"scripts": {
-		"api-extractor": "npm run build && api-extractor run",
-		"build": "tsc -p ./",
-		"prepack": "npm run api-extractor"
-	},
-	"devDependencies": {
-<<<<<<< HEAD
-		"@types/node": "20.14.11"
-=======
-		"@types/node": "16.0.0"
->>>>>>> 4e7c58429b42d3c248c32c7caf64987a3575f911
-	}
-}
+
