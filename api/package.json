@@ -1,7 +1,7 @@
 {
 	"description": "Type declarations and client library for the Azure Resources extension API",
 	"devDependencies": {
-		"@types/node": "^16.0.0"
+		"@types/node": "22.5.0"
 	},
 	"main": "out/src/index.js",
 	"name": "@microsoft/vscode-azureresources-api",
