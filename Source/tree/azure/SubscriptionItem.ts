@@ -3,8 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { callWithTelemetryAndErrorHandling, createSubscriptionContext, IActionContext, ISubscriptionContext } from "@microsoft/vscode-azext-utils";
+import {
+	callWithTelemetryAndErrorHandling,
+	createSubscriptionContext,
+	IActionContext,
+	ISubscriptionContext,
+} from "@microsoft/vscode-azext-utils";
 import * as vscode from "vscode";
+
 import { AzureSubscription } from "../../../api/src/index";
 import { AzureResourceProviderManager } from "../../api/ResourceProviderManagers";
 import { settingUtils } from "../../utils/settingUtils";
@@ -15,49 +21,73 @@ import { ResourceGroupsTreeContext } from "../ResourceGroupsTreeContext";
 import { AzureResourceGroupingManager } from "./grouping/AzureResourceGroupingManager";
 
 export class SubscriptionItem implements ResourceGroupsItem {
-    constructor(
-        private readonly context: ResourceGroupsTreeContext,
-        private readonly resourceGroupingManager: AzureResourceGroupingManager,
-        private readonly resourceProviderManager: AzureResourceProviderManager,
-        subscription: AzureSubscription) {
+	constructor(
+		private readonly context: ResourceGroupsTreeContext,
+		private readonly resourceGroupingManager: AzureResourceGroupingManager,
+		private readonly resourceProviderManager: AzureResourceProviderManager,
+		subscription: AzureSubscription,
+	) {
+		this.subscription = {
+			// for v1.5 compatibility
+			...createSubscriptionContext(subscription),
+			...subscription,
+		};
 
-        this.subscription = {
-            // for v1.5 compatibility
-            ...createSubscriptionContext(subscription),
-            ...subscription
-        };
+		this.id = `/subscriptions/${this.subscription.subscriptionId}`;
+		this.portalUrl = createPortalUrl(this.subscription, this.id);
+	}
 
-        this.id = `/subscriptions/${this.subscription.subscriptionId}`;
-        this.portalUrl = createPortalUrl(this.subscription, this.id);
-    }
+	public readonly portalUrl: vscode.Uri;
 
-    public readonly portalUrl: vscode.Uri;
+	public readonly id: string;
+	public readonly subscription: ISubscriptionContext & AzureSubscription;
 
-    public readonly id: string;
-    public readonly subscription: ISubscriptionContext & AzureSubscription;
+	async getChildren(): Promise<ResourceGroupsItem[]> {
+		return (
+			(await callWithTelemetryAndErrorHandling(
+				"subscriptionItem.getChildren",
+				async (context: IActionContext) => {
+					const resources =
+						await this.resourceProviderManager.getResources(
+							this.subscription,
+						);
+					context.telemetry.measurements.resourceCount =
+						resources.length;
 
-    async getChildren(): Promise<ResourceGroupsItem[]> {
-        return await callWithTelemetryAndErrorHandling('subscriptionItem.getChildren', async (context: IActionContext) => {
-            const resources = await this.resourceProviderManager.getResources(this.subscription);
-            context.telemetry.measurements.resourceCount = resources.length;
+					const groupBySetting =
+						settingUtils.getWorkspaceSetting<string>("groupBy");
+					context.telemetry.properties.groupBySetting =
+						groupBySetting?.startsWith("armTag")
+							? "armTag"
+							: groupBySetting;
 
-            const groupBySetting = settingUtils.getWorkspaceSetting<string>('groupBy');
-            context.telemetry.properties.groupBySetting = groupBySetting?.startsWith('armTag') ? 'armTag' : groupBySetting;
+					const groupingItems = this.resourceGroupingManager
+						.groupResources(
+							this,
+							this.context,
+							resources ?? [],
+							groupBySetting,
+						)
+						.sort((a, b) => a.label.localeCompare(b.label));
+					context.telemetry.measurements.groupCount =
+						groupingItems.length;
 
-            const groupingItems = this.resourceGroupingManager.groupResources(this, this.context, resources ?? [], groupBySetting).sort((a, b) => a.label.localeCompare(b.label));
-            context.telemetry.measurements.groupCount = groupingItems.length;
+					return groupingItems;
+				},
+			)) ?? []
+		);
+	}
 
-            return groupingItems;
-        }) ?? [];
-    }
+	getTreeItem(): vscode.TreeItem | Thenable<vscode.TreeItem> {
+		const treeItem = new vscode.TreeItem(
+			this.subscription.name ?? "Unnamed",
+			vscode.TreeItemCollapsibleState.Collapsed,
+		);
 
-    getTreeItem(): vscode.TreeItem | Thenable<vscode.TreeItem> {
-        const treeItem = new vscode.TreeItem(this.subscription.name ?? 'Unnamed', vscode.TreeItemCollapsibleState.Collapsed);
+		treeItem.contextValue = "azureextensionui.azureSubscription";
+		treeItem.iconPath = treeUtils.getIconPath("azureSubscription");
+		treeItem.id = this.id;
 
-        treeItem.contextValue = 'azureextensionui.azureSubscription';
-        treeItem.iconPath = treeUtils.getIconPath('azureSubscription');
-        treeItem.id = this.id;
-
-        return treeItem;
-    }
+		return treeItem;
+	}
 }
