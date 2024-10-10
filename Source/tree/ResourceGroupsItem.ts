@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from "vscode";
+import * as vscode from 'vscode';
 
 export interface ResourceGroupsItem {
-	readonly id: string;
+    readonly id: string;
 
-	getParent?(): vscode.ProviderResult<ResourceGroupsItem>;
-	getChildren(): vscode.ProviderResult<ResourceGroupsItem[]>;
-	getTreeItem(): vscode.TreeItem | Thenable<vscode.TreeItem>;
+    getParent?(): vscode.ProviderResult<ResourceGroupsItem>;
+    getChildren(): vscode.ProviderResult<ResourceGroupsItem[]>;
+    getTreeItem(): vscode.TreeItem | Thenable<vscode.TreeItem>;
 }
