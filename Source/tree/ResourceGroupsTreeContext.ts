@@ -4,15 +4,15 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { ISubscriptionContext } from "@microsoft/vscode-azext-utils";
+
 import { AzureSubscription } from "../../api/src/index";
 import { ResourceGroupsItem } from "./ResourceGroupsItem";
 
 export interface ResourceGroupsTreeContext {
+	readonly subscription: AzureSubscription;
 
-    readonly subscription: AzureSubscription;
+	// TODO: Eliminate this; it's only here for existing command logic.
+	readonly subscriptionContext: ISubscriptionContext;
 
-    // TODO: Eliminate this; it's only here for existing command logic.
-    readonly subscriptionContext: ISubscriptionContext;
-
-    refresh(item: ResourceGroupsItem): void;
+	refresh(item: ResourceGroupsItem): void;
 }
