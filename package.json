@@ -634,11 +634,11 @@
 	},
 	"description": "%azureResourceGroups.description%",
 	"devDependencies": {
-		"@types/node": "22.8.x",
+		"@types/node": "22.9.x",
 		"@types/request-promise": "4.1.51",
 		"@types/semver": "7.5.8",
 		"@types/uuid": "10.0.0",
-		"@types/ws": "8.5.12",
+		"@types/ws": "8.5.13",
 		"chokidar": "4.0.1",
 		"glob": "11.0.0"
 	},
