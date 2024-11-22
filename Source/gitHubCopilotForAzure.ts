@@ -8,9 +8,13 @@ import { commands, Extension, ExtensionContext, extensions, window } from "vscod
 import { localize } from "./utils/localize";
 
 const ghcpExtensionId = 'github.copilot';
+
 const ghcpChatExtensionId = 'github.copilot-chat';
+
 const ghcpfaExtensionId = 'ms-azuretools.vscode-azure-github-copilot';
+
 const ghcpfaLearnPage = 'https://aka.ms/GetGitHubCopilotForAzure';
+
 const dontShowKey = 'ghcpfa/dontShow';
 
 /**
@@ -21,11 +25,13 @@ export function gitHubCopilotForAzureToast({ globalState }: ExtensionContext): v
         context.telemetry.properties.isActivationEvent = 'true';
 
         const arePrecursorExtensionsInstalled: boolean = isExtensionInstalled(ghcpExtensionId) && isExtensionInstalled(ghcpChatExtensionId);
+
         if (!arePrecursorExtensionsInstalled || isExtensionInstalled(ghcpfaExtensionId)) {
             return;
         }
 
         const dontShow: boolean = globalState.get<boolean>(dontShowKey, false);
+
         if (dontShow) {
             return;
         }
@@ -58,6 +64,7 @@ export function gitHubCopilotForAzureToast({ globalState }: ExtensionContext): v
         context.telemetry.properties.userAsked = 'true';
 
         const message: string = localize('ghcpToastMessage', 'Get help with Azure questions and tasks in Copilot Chat by installing the GitHub Copilot for Azure extension.');
+
         const button = await window.showInformationMessage(message, install, learnMore, never);
         await button?.run();
     });

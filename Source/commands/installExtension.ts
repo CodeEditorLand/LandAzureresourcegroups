@@ -22,6 +22,7 @@ export async function installExtension(
 
 	if (!alreadyInstalled) {
 		context.telemetry.properties.installedAfterOneMinute = "false";
+
 		return new Promise((resolve) => {
 			const disposable = extensions.onDidChange(() => {
 				if (isInstalled()) {

@@ -25,16 +25,20 @@ export async function reportIssue(context: IActionContext): Promise<void> {
 		"selectExtension",
 		"Select the Azure extension you want to report an issue on",
 	);
+
 	const azExtension: AzExtWrapper | undefined = (
 		await context.ui.showQuickPick(picks, {
 			placeHolder,
 			suppressPersistence: true,
 		})
 	).data;
+
 	if (azExtension) {
 		context.telemetry.properties.extension = azExtension.name;
+
 		const commandId: string | undefined =
 			await azExtension.getReportIssueCommandId();
+
 		if (commandId) {
 			await commands.executeCommand(commandId);
 		} else {

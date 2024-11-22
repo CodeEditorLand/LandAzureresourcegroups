@@ -58,11 +58,14 @@ export async function maintainCloudShellConnection(_context: IActionContext, opt
 
 export async function refreshDevTunnelAccessToken() {
     const devTunnelsProdAppId = '46da2f7e-b5ef-422a-88d4-2a7f9de6a0b2';
+
     const session = await vscode.authentication.getSession('microsoft', [`${devTunnelsProdAppId}/.default`], { silent: true });
+
     if (!session) {
         ext.outputChannel.error('Failed to refresh Dev Tunnel access token.');
     } else {
         ext.outputChannel.debug('Running tunnel user login...');
+
         const codeCli = 'vscode';
         exec(`${codeCli} tunnel user login --provider microsoft --access-token ${session.accessToken}`,
             (error, stdout, stderr) => {
@@ -79,10 +82,12 @@ export async function refreshDevTunnelAccessToken() {
 
 async function cloudShellKeepAlive(consoleUri: string) {
     const session = await vscode.authentication.getSession('microsoft', ['https://management.core.windows.net//.default'], { silent: true });
+
     const accessToken = session?.accessToken;
 
     if (!accessToken) {
         ext.outputChannel.error('Failed to get access token.');
+
         return;
     }
     const response = await fetch(`${consoleUri}/keepAlive`, {
@@ -106,10 +111,12 @@ async function cloudShellKeepAlive(consoleUri: string) {
 
 async function cloudShellSize(consoleUri: string, terminalId: string): Promise<void> {
     const session = await vscode.authentication.getSession('microsoft', ['https://management.core.windows.net//.default'], { silent: true });
+
     const accessToken = session?.accessToken;
 
     if (!accessToken) {
         ext.outputChannel.error('Failed to get access token.');
+
         return;
     }
 
@@ -143,7 +150,9 @@ async function recordTelemetry(options: { templateUrl?: string }) {
 
 function extractRepoFromGitHubUrl(url: string): string {
     const regex = /https:\/\/github\.com\/([^\/]+\/[^\/]+)/;
+
     const match = url.match(regex);
+
     if (match) {
         return match[1];
     } else {

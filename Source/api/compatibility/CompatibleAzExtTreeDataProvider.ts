@@ -67,7 +67,9 @@ export class CompatibleAzExtTreeDataProvider extends IntermediateCompatibleAzExt
 	): Promise<T | undefined> {
 		// compatibility with default resource to deploy setting, which value might be a v1 tree item id
 		const id = convertV1TreeItemId(fullId);
+
 		const result = await this.tdp.findItemById(id);
+
 		return isWrapper(result)
 			? result.unwrap<T>()
 			: (result as unknown as T);
@@ -89,6 +91,7 @@ export class CompatibleAzExtTreeDataProvider extends IntermediateCompatibleAzExt
 					context,
 					this.tdp,
 				);
+
 			return {
 				subscription: subscriptionContext,
 				treeDataProvider: this,
@@ -113,6 +116,7 @@ export class CompatibleAzExtTreeDataProvider extends IntermediateCompatibleAzExt
 		}
 		// Trigger a refresh at the given treeItem
 		this.tdp.notifyTreeDataChanged(treeItem);
+
 		return Promise.resolve();
 	}
 
@@ -157,5 +161,6 @@ class ShouldNeverBeCalledError extends Error {
 export function convertV1TreeItemId(id: string): string {
 	// if full id contains two instances of subscriptions/ then remove everything before the second instance
 	const regex = /^(\/subscriptions.*)(?:\/subscriptions)/i;
+
 	return id.replace(regex, "/subscriptions");
 }

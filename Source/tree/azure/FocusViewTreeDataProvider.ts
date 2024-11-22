@@ -60,12 +60,15 @@ export class FocusViewTreeDataProvider extends AzureResourceTreeDataProviderBase
 			return await element.getChildren();
 		} else {
 			const focusedGroup = ext.focusedGroup;
+
 			if (!focusedGroup) {
 				return [];
 			}
 
 			const provider = await this.getAzureSubscriptionProvider();
+
 			let subscriptions: AzureSubscription[] | undefined;
+
 			if (
 				(await provider.isSignedIn()) &&
 				(subscriptions = await provider.getSubscriptions(true)).length >
@@ -77,6 +80,7 @@ export class FocusViewTreeDataProvider extends AzureResourceTreeDataProviderBase
 					);
 
 				let resources: AzureResource[] = [];
+
 				for await (const subscription of subscriptions) {
 					resources.push(
 						...(await this.resourceProviderManager.getResources(
@@ -97,6 +101,7 @@ export class FocusViewTreeDataProvider extends AzureResourceTreeDataProviderBase
 				}
 
 				let focusedGroupItem: GroupingItem | undefined = undefined;
+
 				if (focusedGroup) {
 					switch (focusedGroup.kind) {
 						case "resourceGroup":
@@ -114,7 +119,9 @@ export class FocusViewTreeDataProvider extends AzureResourceTreeDataProviderBase
 										).resourceGroup.id.toLowerCase() ===
 										focusedGroup.id.toLowerCase(),
 								);
+
 							break;
+
 						case "resourceType":
 							focusedGroupItem = this.resourceGroupingManager
 								.groupResources(
@@ -128,7 +135,9 @@ export class FocusViewTreeDataProvider extends AzureResourceTreeDataProviderBase
 										(value as ResourceTypeGroupingItem)
 											.resourceType === focusedGroup.type,
 								);
+
 							break;
+
 						case "location":
 							focusedGroupItem = this.resourceGroupingManager
 								.groupResources(
@@ -142,6 +151,7 @@ export class FocusViewTreeDataProvider extends AzureResourceTreeDataProviderBase
 										(value as LocationGroupingItem)
 											.location === focusedGroup.location,
 								);
+
 							break;
 					}
 				}

@@ -42,6 +42,7 @@ export class CompatibleApplicationResourceBranchDataProvider<
 			type: element.azureResourceType.type,
 			kind: element.azureResourceType.kinds?.join(";"),
 		};
+
 		const subscriptionContext: ISubscriptionContext =
 			createSubscriptionContext(element.subscription);
 
@@ -49,12 +50,14 @@ export class CompatibleApplicationResourceBranchDataProvider<
 			subscriptionContext,
 			oldAppResource,
 		);
+
 		if (!resolved) {
 			const noResolveError = l10n.t(
 				'Could not resolve resource "{0}"',
 				element.id,
 			);
 			ext.outputChannel.appendLog(noResolveError);
+
 			throw new Error(noResolveError);
 		}
 		const result = CompatibleResolvedApplicationResourceTreeItem.Create(

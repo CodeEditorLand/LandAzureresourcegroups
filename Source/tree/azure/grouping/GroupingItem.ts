@@ -122,6 +122,7 @@ export class GroupingItem implements ResourceGroupsItem {
 			const azExtResourceTypes = sortedResources.map(
 				(r) => r.resourceType,
 			);
+
 			if (azExtResourceTypes.includes(type)) {
 				ext.actions.refreshAzureTree(this);
 				ext.actions.refreshFocusTree(this);
@@ -152,10 +153,12 @@ export class GroupingItem implements ResourceGroupsItem {
 										this.branchDataProviderFactory(
 											resource,
 										);
+
 									const resourceItem =
 										await branchDataProvider.getResourceItem(
 											resource,
 										);
+
 									const options: BranchDataItemOptions = {
 										contextValues: ["azureResource"],
 										defaultId: resource.id,
@@ -202,6 +205,7 @@ export class GroupingItem implements ResourceGroupsItem {
 											e,
 										),
 									);
+
 									throw parsedError;
 								}
 							},

@@ -43,6 +43,7 @@ export function createAzureResourcesHostApi(
 
 		registerAzureResourceProvider: (provider: AzureResourceProvider) => {
 			azureResourceProviderManager.addResourceProvider(provider);
+
 			return new vscode.Disposable(() =>
 				azureResourceProviderManager.removeResourceProvider(provider),
 			);
@@ -52,6 +53,7 @@ export function createAzureResourcesHostApi(
 			provider: BranchDataProvider<AzureResource, T>,
 		) => {
 			azureResourceBranchDataProviderManager.addProvider(type, provider);
+
 			return new vscode.Disposable(() =>
 				azureResourceBranchDataProviderManager.removeProvider(type),
 			);
@@ -61,6 +63,7 @@ export function createAzureResourcesHostApi(
 			provider: WorkspaceResourceProvider,
 		) => {
 			workspaceResourceProviderManager.addResourceProvider(provider);
+
 			return new vscode.Disposable(() =>
 				workspaceResourceProviderManager.removeResourceProvider(
 					provider,
@@ -77,6 +80,7 @@ export function createAzureResourcesHostApi(
 				type,
 				provider,
 			);
+
 			return new vscode.Disposable(() =>
 				workspaceResourceBranchDataProviderManager.removeProvider(type),
 			);
@@ -89,6 +93,7 @@ export function createAzureResourcesHostApi(
 					context.errorHandling.rethrow = true;
 					context.errorHandling.suppressDisplay = true;
 					context.errorHandling.suppressReportIssue = true;
+
 					return revealResource(context, id, options);
 				},
 			);

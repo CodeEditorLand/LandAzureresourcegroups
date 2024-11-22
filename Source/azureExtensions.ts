@@ -21,6 +21,7 @@ function enableMongoClustersSupport() {
 	const vsCodeCosmosDBConfiguration = extensions.getExtension(
 		"ms-azuretools.vscode-cosmosdb",
 	)?.packageJSON as ExtensionPackageMongoClustersEnabled;
+
 	return (
 		vsCodeCosmosDBConfiguration &&
 		vsCodeCosmosDBConfiguration.enableMongoClusters

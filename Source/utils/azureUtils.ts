@@ -15,8 +15,11 @@ import { treeUtils } from './treeUtils';
 
 export function createGroupConfigFromResource(resource: AppResource, subscriptionId: string | undefined): GroupingConfig {
     const id = nonNullProp(resource, 'id');
+
     const unknown = localize('unknown', 'Unknown');
+
     let iconPath = getIconPath(resource.azExtResourceType);
+
     if (resource.azExtResourceType === AzExtResourceType.ContainerAppsEnvironment) {
         // Even though the child is a ContainerAppsEnvironment we want to show the Container Apps icon
         iconPath = getIconPath(AzExtResourceType.ContainerApps);
@@ -57,6 +60,7 @@ export function createGroupConfigFromResource(resource: AppResource, subscriptio
 
 export function createAzureExtensionsGroupConfig(extensions: IAzExtMetadata[], subscriptionId: string): GroupNodeConfiguration[] {
     const azExtGroupConfigs: GroupNodeConfiguration[] = [];
+
     for (const azExt of extensions) {
         for (const azExtResourceType of azExt.resourceTypes) {
             azExtGroupConfigs.push({

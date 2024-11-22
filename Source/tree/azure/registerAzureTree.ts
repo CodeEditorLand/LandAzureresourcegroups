@@ -48,6 +48,7 @@ export function registerAzureTree(
 		itemCache,
 	);
 	context.subscriptions.push(resourceGroupingManager);
+
 	const azureResourceTreeDataProvider = new AzureResourceTreeDataProvider(
 		azureResourceBranchDataProviderManager.onDidChangeTreeData,
 		itemCache,
@@ -85,6 +86,7 @@ function createGroupingManager(
 ): AzureResourceGroupingManager {
 	const branchDataItemFactory =
 		createResourceItemFactory<AzureResource>(itemCache);
+
 	const groupingItemFactory = new GroupingItemFactory({
 		resourceItemFactory: branchDataItemFactory,
 		branchDataProviderFactory: (r) =>
@@ -96,5 +98,6 @@ function createGroupingManager(
 			hideSeparators: true,
 		},
 	});
+
 	return new AzureResourceGroupingManager(groupingItemFactory);
 }

@@ -103,15 +103,20 @@ async function waitForConnection(this: CloudShell): Promise<boolean> {
 						resolve(handleStatus());
 					});
 				});
+
 			case "Connected":
 				return true;
+
 			case "Disconnected":
 				return false;
+
 			default:
 				const status: never = this.status;
+
 				throw new Error(`Unexpected status '${status}'`);
 		}
 	};
+
 	return handleStatus();
 }
 
@@ -141,6 +146,7 @@ function getUploadFile(
 		}
 
 		const accessTokens: AccessTokens = await tokens;
+
 		const { terminalUri } = await uris;
 
 		if (options.token && options.token.isCancellationRequested) {
@@ -149,13 +155,17 @@ function getUploadFile(
 
 		return new Promise<void>((resolve, reject) => {
 			const form = new FormData();
+
 			form.append("uploading-file", stream, {
 				filename,
 				knownLength: options.contentLength,
 			});
+
 			const uploadUri: string = `${terminalUri}/upload`;
 			logAttemptingToReachUrlMessage(uploadUri);
+
 			const uri: UrlWithStringQuery = parse(uploadUri);
+
 			const req: ClientRequest = form.submit(
 				{
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
@@ -209,12 +219,15 @@ function getUploadFile(
 						const total: number = req.getHeader(
 							"Content-Length",
 						) as number;
+
 						if (total) {
 							const worked: number = Math.min(
 								Math.round((100 * socket.bytesWritten) / total),
 								100,
 							);
+
 							const increment: number = worked - previous;
+
 							if (increment) {
 								// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 								options.progress!.report({
@@ -250,25 +263,35 @@ export function createCloudConsole(
 
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			let liveServerQueue: Queue<any> | undefined;
+
 			const event: EventEmitter<CloudShellStatus> =
 				new EventEmitter<CloudShellStatus>();
+
 			let deferredTerminal: Deferred<Terminal>;
+
 			let deferredTerminalProfile: Deferred<TerminalProfile>;
 			// let deferredSession: Deferred<AzureSession>;
+
 			let deferredTokens: Deferred<AccessTokens>;
+
 			const tokensPromise: Promise<AccessTokens> =
 				new Promise<AccessTokens>(
 					(resolve, reject) => (deferredTokens = { resolve, reject }),
 				);
+
 			let deferredUris: Deferred<ConsoleUris>;
+
 			const urisPromise: Promise<ConsoleUris> = new Promise<ConsoleUris>(
 				(resolve, reject) => (deferredUris = { resolve, reject }),
 			);
+
 			let deferredInitialSize: Deferred<Size>;
+
 			const initialSizePromise: Promise<Size> = new Promise<Size>(
 				(resolve, reject) =>
 					(deferredInitialSize = { resolve, reject }),
 			);
+
 			const state: CloudShellInternal = {
 				status: "Connecting",
 				onStatusChanged: event.event,
@@ -294,6 +317,7 @@ export function createCloudConsole(
 			function updateStatus(status: CloudShellStatus) {
 				state.status = status;
 				event.fire(state.status);
+
 				if (status === "Disconnected") {
 					deferredTerminal.reject(status);
 					deferredTerminalProfile.reject(status);
@@ -313,6 +337,7 @@ export function createCloudConsole(
 			(async function (): Promise<any> {
 				if (!workspace.isTrusted) {
 					updateStatus("Disconnected");
+
 					return requiresWorkspaceTrust(context);
 				}
 
@@ -323,22 +348,27 @@ export function createCloudConsole(
 				);
 
 				const isWindows: boolean = process.platform === "win32";
+
 				if (isWindows) {
 					// See below
 					try {
 						const { stdout } = await exec("node.exe --version");
+
 						const version: string | boolean =
 							stdout[0] === "v" && stdout.substr(1).trim();
+
 						if (
 							version &&
 							semver.valid(version) &&
 							!semver.gte(version, "6.0.0")
 						) {
 							updateStatus("Disconnected");
+
 							return requiresNode(context);
 						}
 					} catch (err) {
 						updateStatus("Disconnected");
+
 						return requiresNode(context);
 					}
 				}
@@ -350,6 +380,7 @@ export function createCloudConsole(
 					"vscode-cloud-console",
 					async (req, res) => {
 						let dequeue: boolean = false;
+
 						for (const message of await readJSON(req)) {
 							/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 							if (message.type === "poll") {
@@ -371,6 +402,7 @@ export function createCloudConsole(
 						}
 
 						let response = [];
+
 						if (dequeue) {
 							try {
 								response = await serverQueue.dequeue(60000);
@@ -388,6 +420,7 @@ export function createCloudConsole(
 						type: "log",
 						args: [localize("loggingIn", "Signing in...")],
 					});
+
 					try {
 						if (await subscriptionProvider.signIn()) {
 							serverQueue.push({
@@ -411,6 +444,7 @@ export function createCloudConsole(
 						// await delay(1000);
 						// serverQueue.push({ type: 'exit' });
 						updateStatus("Disconnected");
+
 						return;
 					}
 				}
@@ -431,6 +465,7 @@ export function createCloudConsole(
 					ext.context.asAbsolutePath("dist"),
 					"cloudConsoleLauncher",
 				);
+
 				if (isWindows) {
 					cloudConsoleLauncherPath = cloudConsoleLauncherPath.replace(
 						/\\/g,
@@ -476,6 +511,7 @@ export function createCloudConsole(
 					// Entry point: Extension API
 					const terminal: Terminal =
 						window.createTerminal(terminalOptions);
+
 					const terminalCloseSubscription = window.onDidCloseTerminal(
 						(t) => {
 							if (t === terminal) {
@@ -492,10 +528,12 @@ export function createCloudConsole(
 				liveServerQueue = serverQueue;
 
 				const tenants = await subscriptionProvider.getTenants();
+
 				let selectedTenant: TenantIdDescription | undefined = undefined;
 
 				const subscriptions =
 					await subscriptionProvider.getSubscriptions(false);
+
 				if (tenants.length <= 1) {
 					serverQueue.push({
 						type: "log",
@@ -511,6 +549,7 @@ export function createCloudConsole(
 					subscriptions.forEach((sub) => {
 						tenantsIdsWithSubs.add(sub.tenantId);
 					});
+
 					const tenantsWithSubs = tenants.filter((tenant) =>
 						tenantsIdsWithSubs.has(nonNullProp(tenant, "tenantId")),
 					);
@@ -538,10 +577,12 @@ export function createCloudConsole(
 								),
 							],
 						});
+
 						const picks = tenantsWithSubs
 							.map((tenant) => {
 								const defaultDomainName: string | undefined =
 									tenant.defaultDomain;
+
 								return <
 									IAzureQuickPickItem<TenantIdDescription>
 								>{
@@ -567,6 +608,7 @@ export function createCloudConsole(
 								"noTenantPicked";
 							serverQueue.push({ type: "exit" });
 							updateStatus("Disconnected");
+
 							return;
 						}
 						selectedTenant = pick.data;
@@ -586,6 +628,7 @@ export function createCloudConsole(
 				const subscriptionsInSelectedTenant = subscriptions.filter(
 					(sub) => sub.tenantId === selectedTenant?.tenantId,
 				);
+
 				if (subscriptionsInSelectedTenant.length === 0) {
 					// cloud shell requires at least one subscription to work
 					serverQueue.push({
@@ -598,12 +641,14 @@ export function createCloudConsole(
 						],
 					});
 					updateStatus("Disconnected");
+
 					return;
 				}
 
 				// get session from the first subscription for the selected tenant
 				const session =
 					await subscriptionsInSelectedTenant[0].authentication.getSession();
+
 				if (!session) {
 					serverQueue.push({
 						type: "log",
@@ -615,10 +660,12 @@ export function createCloudConsole(
 						],
 					});
 					updateStatus("Disconnected");
+
 					return;
 				}
 
 				const result = await findUserSettings(session.accessToken);
+
 				if (!result) {
 					serverQueue.push({
 						type: "log",
@@ -627,11 +674,13 @@ export function createCloudConsole(
 					await requiresSetUp(context);
 					serverQueue.push({ type: "exit" });
 					updateStatus("Disconnected");
+
 					return;
 				}
 
 				// provision
 				let consoleUri: string;
+
 				const provisionTask: () => Promise<void> = async () => {
 					consoleUri = await provisionConsole(
 						session.accessToken,
@@ -640,6 +689,7 @@ export function createCloudConsole(
 					);
 					context.telemetry.properties.outcome = "provisioned";
 				};
+
 				try {
 					serverQueue.push({
 						type: "log",
@@ -657,15 +707,18 @@ export function createCloudConsole(
 						Errors.DeploymentOsTypeConflict
 					) {
 						const reset = await deploymentConflict(context, os);
+
 						if (reset) {
 							await resetConsole(
 								session.accessToken,
 								getArmEndpoint(),
 							);
+
 							return provisionTask();
 						} else {
 							serverQueue.push({ type: "exit" });
 							updateStatus("Disconnected");
+
 							return;
 						}
 					} else {
@@ -682,12 +735,14 @@ export function createCloudConsole(
 					"Connecting terminal...",
 				);
 				serverQueue.push({ type: "log", args: [connecting] });
+
 				const progressTask: (i: number) => void = (i: number) => {
 					serverQueue.push({
 						type: "log",
 						args: [`\x1b[A${connecting}${".".repeat(i)}`],
 					});
 				};
+
 				const initialSize: Size = await initialSizePromise;
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				const consoleUris: ConsoleUris = await connectTerminal(
@@ -716,6 +771,7 @@ export function createCloudConsole(
 				updateStatus("Disconnected");
 				context.telemetry.properties.outcome = "error";
 				context.telemetry.properties.message = parsedError.message;
+
 				if (liveServerQueue) {
 					liveServerQueue.push({
 						type: "log",
@@ -729,6 +785,7 @@ export function createCloudConsole(
 					});
 				}
 			});
+
 			return state;
 		},
 	)!;
@@ -753,13 +810,17 @@ async function findUserSettings(
 
 async function requiresSetUp(context: IActionContext) {
 	context.telemetry.properties.outcome = "requiresSetUp";
+
 	const open: MessageItem = { title: localize("open", "Open") };
+
 	const message: string = localize(
 		"setUpInWeb",
 		"First launch of Cloud Shell in a directory requires setup in the web application (https://shell.azure.com).",
 	);
+
 	const response: MessageItem | undefined =
 		await window.showInformationMessage(message, open);
+
 	if (response === open) {
 		context.telemetry.properties.outcome = "requiresSetUpOpen";
 		void env.openExternal(Uri.parse("https://shell.azure.com"));
@@ -770,13 +831,17 @@ async function requiresSetUp(context: IActionContext) {
 
 async function requiresNode(context: IActionContext) {
 	context.telemetry.properties.outcome = "requiresNode";
+
 	const open: MessageItem = { title: localize("open", "Open") };
+
 	const message: string = localize(
 		"requiresNode",
 		"Opening a Cloud Shell currently requires Node.js 6 or later to be installed (https://nodejs.org).",
 	);
+
 	const response: MessageItem | undefined =
 		await window.showInformationMessage(message, open);
+
 	if (response === open) {
 		context.telemetry.properties.outcome = "requiresNodeOpen";
 		void env.openExternal(Uri.parse("https://nodejs.org"));
@@ -787,31 +852,39 @@ async function requiresNode(context: IActionContext) {
 
 async function requiresWorkspaceTrust(context: IActionContext) {
 	context.telemetry.properties.outcome = "requiresWorkspaceTrust";
+
 	const ok: MessageItem = { title: localize("ok", "OK") };
+
 	const message: string = localize(
 		"cloudShellRequiresTrustedWorkspace",
 		"Opening a Cloud Shell only works in a trusted workspace.",
 	);
+
 	return (await window.showInformationMessage(message, ok)) === ok;
 }
 
 async function deploymentConflict(context: IActionContext, os: OS) {
 	context.telemetry.properties.outcome = "deploymentConflict";
+
 	const ok: MessageItem = { title: localize("ok", "OK") };
+
 	const message: string = localize(
 		"deploymentConflict",
 		"Starting a {0} session will terminate all active {1} sessions. Any running processes in active {1} sessions will be terminated.",
 		os.shellName,
 		os.otherOS.shellName,
 	);
+
 	const response: MessageItem | undefined = await window.showWarningMessage(
 		message,
 		ok,
 	);
+
 	const reset: boolean = response === ok;
 	context.telemetry.properties.outcome = reset
 		? "deploymentConflictReset"
 		: "deploymentConflictCancel";
+
 	return reset;
 }
 
@@ -868,6 +941,7 @@ export async function getUserSettings(
 	accessToken: string,
 ): Promise<UserSettings | undefined> {
 	const targetUri = `${getArmEndpoint()}/providers/Microsoft.Portal/userSettings/cloudconsole?api-version=${consoleApiVersion}`;
+
 	const response = await fetch(targetUri, {
 		method: "GET",
 		headers: {
@@ -897,6 +971,7 @@ export async function provisionConsole(
 		osType,
 		true,
 	);
+
 	for (
 		let i = 0;
 		i < 10;
@@ -910,6 +985,7 @@ export async function provisionConsole(
 	) {
 		if (response.status < 200 || response.status > 299) {
 			const body = await response.json();
+
 			if (
 				response.status === 409 &&
 				response.body &&
@@ -927,6 +1003,7 @@ export async function provisionConsole(
 		}
 
 		const consoleResource = await response.json();
+
 		if (consoleResource.properties.provisioningState === "Succeeded") {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 			return consoleResource.properties.uri;
@@ -1006,6 +1083,7 @@ export async function connectTerminal(
 		);
 
 		const body = await response.json();
+
 		if (response.status < 200 || response.status > 299) {
 			if (
 				response.status !== 503 &&
@@ -1025,6 +1103,7 @@ export async function connectTerminal(
 			}
 			await delay(1000 * (i + 1));
 			progress(i + 1);
+
 			continue;
 		}
 

@@ -6,6 +6,7 @@
 import { AzExtResourceType } from "./AzExtResourceType";
 
 const FunctionAppKind = "functionapp";
+
 const LogicAppKind = "workflowapp";
 
 /**
@@ -19,6 +20,7 @@ export function getAzExtResourceType(resource: {
 	kind?: string;
 }): AzExtResourceType | undefined {
 	const type = resource.type.toLowerCase();
+
 	const kind = resource.kind?.toLowerCase() || "";
 
 	switch (type) {

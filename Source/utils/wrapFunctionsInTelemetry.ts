@@ -14,7 +14,9 @@ import { ext } from "../extensionVariables";
 
 function stringifyError(e: unknown): string {
 	const error = parseError(e);
+
 	let str = `${error.message}`;
+
 	if (error.stack) {
 		str = str.concat(`\n\t\tat ${error.stack.split("\n").join("\n\t\t")}`);
 	}
@@ -25,6 +27,7 @@ function handleError(e: unknown, functionName: string): never {
 	ext.outputChannel.appendLog(
 		`Internal error: '${functionName}' threw an exception\n\t${stringifyError(e)}`,
 	);
+
 	if (e instanceof Error) {
 		e.message =
 			functionName === "branchDataProvider.getResourceItem"
@@ -102,6 +105,7 @@ export function wrapFunctionsInTelemetry<
 					context.errorHandling.suppressDisplay = true;
 					context.errorHandling.suppressReportIssue = true;
 					options?.beforeHook?.(context);
+
 					try {
 						return await func(...args);
 					} catch (e) {
@@ -150,6 +154,7 @@ export function wrapFunctionsInTelemetrySync<
 					context.errorHandling.suppressDisplay = true;
 					context.errorHandling.suppressReportIssue = true;
 					options?.beforeHook?.(context);
+
 					try {
 						return func(...args);
 					} catch (e) {

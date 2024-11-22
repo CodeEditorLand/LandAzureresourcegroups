@@ -58,8 +58,10 @@ export async function activate(context: vscode.ExtensionContext, perfStats: { lo
 
     const refreshAzureTreeEmitter = new vscode.EventEmitter<void | ResourceGroupsItem | ResourceGroupsItem[] | null | undefined>();
     context.subscriptions.push(refreshAzureTreeEmitter);
+
     const refreshFocusTreeEmitter = new vscode.EventEmitter<void | ResourceGroupsItem | ResourceGroupsItem[] | null | undefined>();
     context.subscriptions.push(refreshFocusTreeEmitter);
+
     const refreshWorkspaceTreeEmitter = new vscode.EventEmitter<void | ResourceGroupsItem | ResourceGroupsItem[] | null | undefined>();
     context.subscriptions.push(refreshWorkspaceTreeEmitter);
 
@@ -119,9 +121,11 @@ export async function activate(context: vscode.ExtensionContext, perfStats: { lo
     const workspaceResourceBranchDataProviderManager = new WorkspaceResourceBranchDataProviderManager(
         new WorkspaceDefaultBranchDataProvider(),
         type => void extensionManager.activateWorkspaceResourceBranchDataProvider(type));
+
     const workspaceResourceProviderManager = new WorkspaceResourceProviderManager(() => extensionManager.activateWorkspaceResourceProviders());
 
     const azureResourcesBranchDataItemCache = new BranchDataItemCache();
+
     const azureResourceTreeDataProvider = registerAzureTree(context, {
         azureResourceProviderManager,
         azureResourceBranchDataProviderManager,

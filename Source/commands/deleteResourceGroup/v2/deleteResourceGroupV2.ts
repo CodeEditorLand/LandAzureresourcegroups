@@ -41,6 +41,7 @@ export async function deleteResourceGroupV2(
 			isResourceGroupGroupingItem(primaryNode) &&
 			isResourceGroupGroupingItem(n),
 	);
+
 	if (!isResourceGroupGroupingItem(primaryNode)) {
 		primaryNode = undefined;
 	}
@@ -51,6 +52,7 @@ export async function deleteResourceGroupV2(
 	);
 
 	let subscription: AzureSubscription;
+
 	let resourceGroupsToDelete: AzureResource[] = [];
 
 	if (selectedResourceGroupNodes) {
@@ -93,10 +95,12 @@ async function pickResourceGroups(context: IActionContext) {
 		context,
 		ext.v2.api.resources.azureResourceTreeDataProvider,
 	);
+
 	const client = await createResourceClient([
 		context,
 		createSubscriptionContext(subscription),
 	]);
+
 	const resourceGroups = await uiUtils.listAllIterator(
 		client.resourceGroups.list(),
 	);
@@ -139,11 +143,14 @@ async function deleteResourceGroups(
 
 	const deleteConfirmation: string | undefined =
 		settingUtils.getWorkspaceSetting("deleteConfirmation");
+
 	for await (const rg of resourceGroups) {
 		const resourcesInRg = await uiUtils.listAllIterator(
 			client.resources.listByResourceGroup(rg.name),
 		);
+
 		const numOfResources = resourcesInRg.length;
+
 		const hasOneResource: boolean = numOfResources === 1;
 
 		if (deleteConfirmation === "ClickButton") {
@@ -153,6 +160,7 @@ async function deleteResourceGroups(
 				rg.name,
 				numOfResources,
 			);
+
 			const areYouSureDeleteOne: string = localize(
 				"areYouSureDeleteOne",
 				'Are you sure you want to delete resource group "{0}"? There is {1} resource in this resource group that will be deleted.',
@@ -171,13 +179,16 @@ async function deleteResourceGroups(
 				rg.name,
 				numOfResources,
 			);
+
 			const enterToDeleteOne: string = localize(
 				"enterToDeleteOne",
 				'Enter "{0}" to delete this resource group. There is {1} resource in this resource group that will be deleted.',
 				rg.name,
 				numOfResources,
 			);
+
 			const prompt = hasOneResource ? enterToDeleteOne : enterToDelete;
+
 			function validateInput(
 				val: string | undefined,
 			): string | undefined {
@@ -187,9 +198,11 @@ async function deleteResourceGroups(
 				prompt,
 				validateInput,
 			});
+
 			if (!isNameEqual(result, rg.name)) {
 				// Check again just in case `validateInput` didn't prevent the input box from closing
 				context.telemetry.properties.cancelStep = "mismatchDelete";
+
 				throw new UserCancelledError();
 			}
 		}

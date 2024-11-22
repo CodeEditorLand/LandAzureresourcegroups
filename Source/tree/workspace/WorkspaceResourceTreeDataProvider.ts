@@ -39,7 +39,9 @@ export class WorkspaceResourceTreeDataProvider extends ResourceTreeDataProviderB
 			return await element.getChildren();
 		} else {
 			const children: ResourceGroupsItem[] = [];
+
 			const resources = await this.resourceProviderManager.getResources();
+
 			if (resources.length === 0) {
 				await vscode.commands.executeCommand(
 					"setContext",
@@ -56,6 +58,7 @@ export class WorkspaceResourceTreeDataProvider extends ResourceTreeDataProviderB
 						),
 					)),
 				);
+
 				if (
 					vscode.workspace.workspaceFolders === undefined ||
 					vscode.workspace.workspaceFolders.length === 0
@@ -87,7 +90,9 @@ export class WorkspaceResourceTreeDataProvider extends ResourceTreeDataProviderB
 		const branchDataProvider = this.branchDataProviderManager.getProvider(
 			resource.resourceType,
 		);
+
 		const resourceItem = await branchDataProvider.getResourceItem(resource);
+
 		return new BranchDataItemWrapper(
 			resourceItem,
 			branchDataProvider,

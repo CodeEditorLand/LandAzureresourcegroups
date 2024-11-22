@@ -15,6 +15,7 @@ export function createVSCodeAzureSubscriptionProviderFactory(): () => Promise<VS
 	return async (): Promise<VSCodeAzureSubscriptionProvider> => {
 		vscodeAzureSubscriptionProvider ??=
 			await createVSCodeAzureSubscriptionProvider();
+
 		return vscodeAzureSubscriptionProvider;
 	};
 }

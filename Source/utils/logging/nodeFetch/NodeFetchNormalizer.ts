@@ -40,6 +40,7 @@ export class NodeFetchNormalizer
 		headers.forEach((value, key) => {
 			headersRecord[key] = value;
 		});
+
 		return headersRecord;
 	}
 }

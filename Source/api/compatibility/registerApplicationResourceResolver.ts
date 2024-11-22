@@ -34,6 +34,7 @@ export function registerApplicationResourceResolver(
 				resolver,
 				"azureResourceGroups.loadMore" /** TODO: what is the correct value for this? */,
 			);
+
 			const disposable =
 				ext.v2.api.resources.registerAzureResourceBranchDataProvider(
 					type,

@@ -79,6 +79,7 @@ export namespace apiUtils {
 	): Promise<T | undefined> {
 		const extension: vscode.Extension<T> | undefined =
 			vscode.extensions.getExtension(extensionId);
+
 		if (extension) {
 			if (!extension.isActive) {
 				await extension.activate();

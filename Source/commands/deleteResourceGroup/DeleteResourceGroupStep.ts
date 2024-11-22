@@ -26,6 +26,7 @@ export class DeleteResourceGroupStep extends AzureWizardExecuteStep<DeleteResour
 		}>,
 	): Promise<void> {
 		const resourceGroupName = nonNullProp(context, "resourceGroupToDelete");
+
 		const message = localize(
 			"deleteResourceGroup",
 			'Deleting resource group "{0}"...',
@@ -33,6 +34,7 @@ export class DeleteResourceGroupStep extends AzureWizardExecuteStep<DeleteResour
 		);
 		ext.outputChannel.appendLog(message);
 		progress.report({ message });
+
 		const resourceClient: ResourceManagementClient =
 			await createResourceClient([context, context.subscription]);
 		await resourceClient.resourceGroups.beginDeleteAndWait(

@@ -101,11 +101,13 @@ export abstract class ResourceTreeDataProviderBase
 				"getTreeItem",
 				async (context) => {
 					context.errorHandling.rethrow = true;
+
 					return await element.getTreeItem();
 				},
 			))!;
 		} catch (e) {
 			const invalidItem = new InvalidItem(parseError(e));
+
 			return invalidItem.getTreeItem();
 		}
 	}
@@ -114,6 +116,7 @@ export abstract class ResourceTreeDataProviderBase
 		element?: ResourceGroupsItem | undefined,
 	): Promise<ResourceGroupsItem[] | null | undefined> {
 		const children = await this.onGetChildren(element);
+
 		return children?.map((child) => {
 			if (this.state) {
 				// don't wrap items that belong to branch data providers
@@ -150,6 +153,7 @@ export abstract class ResourceTreeDataProviderBase
 					return child;
 				} else if (this.isAncestorOf(child, id)) {
 					element = child;
+
 					continue outerLoop;
 				}
 			}

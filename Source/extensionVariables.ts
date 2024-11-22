@@ -34,6 +34,7 @@ export namespace extActions {
 			| undefined
 			| void,
 	) => void;
+
 	export let refreshAzureTree: (
 		data?:
 			| ResourceGroupsItem
@@ -42,6 +43,7 @@ export namespace extActions {
 			| undefined
 			| void,
 	) => void;
+
 	export let refreshFocusTree: (
 		data?:
 			| ResourceGroupsItem
@@ -59,19 +61,29 @@ export namespace ext {
 	export let context: ExtensionContext;
 	// TODO: do we need this? only used by load more command
 	export let appResourceTree: AzExtTreeDataProvider;
+
 	export let appResourceTreeView: TreeView<unknown>;
 	// TODO: do we need this? only used by load more command
 	export let workspaceTree: AzExtTreeDataProvider;
+
 	export let workspaceTreeView: TreeView<unknown>;
+
 	export let activityLogTree: AzExtTreeDataProvider;
+
 	export let activityLogTreeItem: ActivityLogTreeItem;
+
 	export let helpTree: AzExtTreeDataProvider;
+
 	export let outputChannel: IAzExtLogOutputChannel;
+
 	export let ignoreBundle: boolean | undefined;
+
 	export const prefix: string = "azureResourceGroups";
 
 	export let tagFS: TagFileSystem;
+
 	export let diagnosticWatcher: Disposable | undefined;
+
 	export let diagnosticCollection: DiagnosticCollection;
 
 	export let azureTreeState: TreeItemStateStore;
@@ -86,13 +98,16 @@ export namespace ext {
 		export let overrideAzureServiceFactory:
 			| AzureResourcesServiceFactory
 			| undefined;
+
 		export let overrideAzureSubscriptionProvider:
 			| (() => AzureSubscriptionProvider)
 			| undefined;
 	}
 
 	export let focusedGroup: GroupingKind | undefined;
+
 	export let focusView: TreeView<unknown>;
+
 	export let focusViewTreeDataProvider: FocusViewTreeDataProvider;
 
 	export const actions = extActions;

@@ -30,10 +30,13 @@ export function unwrapArgs<T>(
 	args?: unknown[],
 ): [node?: T, nodes?: T[], ...args: unknown[]] {
 	const maybeNodeWrapper = args?.[0];
+
 	const maybeNodeWrapperArray = args?.[1];
+
 	const remainingArgs = args?.slice(2) ?? [];
 
 	let node: T | undefined;
+
 	if (maybeNodeWrapper && isWrapper(maybeNodeWrapper)) {
 		// If the first arg is a wrapper, unwrap it
 		node = maybeNodeWrapper.unwrap<T>();
@@ -43,6 +46,7 @@ export function unwrapArgs<T>(
 	}
 
 	let nodes: T[] | undefined;
+
 	if (
 		maybeNodeWrapperArray &&
 		Array.isArray(maybeNodeWrapperArray) &&
@@ -51,6 +55,7 @@ export function unwrapArgs<T>(
 		// If the first arg is an array of wrappers, unwrap them
 		const wrappedNodes = maybeNodeWrapperArray as Wrapper[];
 		nodes = [];
+
 		for (const n of wrappedNodes) {
 			nodes.push(n.unwrap<T>());
 		}

@@ -113,6 +113,7 @@ function wrapBranchDataProvider<
 				getResourceItem: async (element: ResourceBase) => {
 					const result =
 						await branchDataProvider.getResourceItem(element);
+
 					if (!result) {
 						throw new NullishGetResourceItemResultError(result);
 					}

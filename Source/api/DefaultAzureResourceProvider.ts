@@ -35,10 +35,12 @@ export class DefaultAzureResourceProvider implements AzureResourceProvider {
 					context,
 					subscription,
 				);
+
 				const resourceGroups = await this.listResourceGroups(
 					context,
 					subscription,
 				);
+
 				return [...azureResources, ...resourceGroups];
 			},
 		);
@@ -87,6 +89,7 @@ export class DefaultAzureResourceProvider implements AzureResourceProvider {
 			);
 		context.telemetry.measurements.resourceGroupCount =
 			allResourceGroups.length;
+
 		return allResourceGroups.map((resource) =>
 			createResourceGroup(subscription, resource),
 		);

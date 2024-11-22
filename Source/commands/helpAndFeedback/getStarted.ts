@@ -17,6 +17,7 @@ export async function getStarted(context: IActionContext): Promise<void> {
 	const azExtensions: AzExtWrapper[] = getAzureExtensions();
 
 	let picks: IAzureQuickPickItem<AzExtWrapper>[] = [];
+
 	for (const azExt of azExtensions) {
 		if (azExt.tutorial) {
 			picks.push({
@@ -32,6 +33,7 @@ export async function getStarted(context: IActionContext): Promise<void> {
 		"selectExtension",
 		"Select a getting started scenario",
 	);
+
 	const extension: AzExtWrapper = (
 		await context.ui.showQuickPick(picks, {
 			placeHolder,

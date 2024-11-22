@@ -12,6 +12,7 @@ import { localize } from "../../utils/localize";
 export function getTagDiagnostics(text: string): Diagnostic[] {
 	const visitor: TagVisitor = new TagVisitor();
 	jsonc.visit(text, visitor);
+
 	return visitor.diagnostics;
 }
 
@@ -56,6 +57,7 @@ class TagVisitor implements jsonc.JSONVisitor {
 		const openBracketPosition: Position = nonNullValue(
 			this._objectOpenBracketPositions.pop(),
 		);
+
 		if (this._objectOpenBracketPositions.length === 1) {
 			// only show the error for an outer-most invalid object
 			const range: Range = new Range(
@@ -92,13 +94,16 @@ class TagVisitor implements jsonc.JSONVisitor {
 		const openBracketPosition: Position = nonNullValue(
 			this._arrayOpenBracketPositions.pop(),
 		);
+
 		if (this._arrayOpenBracketPositions.length === 0) {
 			// only show the error for an outer-most array
 			const range: Range = new Range(
 				openBracketPosition,
 				new Position(closeBracketLine, closeBracketChar + 1),
 			);
+
 			const actualType: string = "array";
+
 			if (this._objectOpenBracketPositions.length === 0) {
 				this.addTagsTypeError(range, actualType);
 			} else if (this._objectOpenBracketPositions.length === 1) {
@@ -126,7 +131,9 @@ class TagVisitor implements jsonc.JSONVisitor {
 				startLine,
 				startCharacter + length,
 			);
+
 			const max: number = 512;
+
 			if (property.length > max) {
 				this.addError(
 					range,
@@ -147,9 +154,11 @@ class TagVisitor implements jsonc.JSONVisitor {
 			}
 
 			const invalidChars: string[] = ["<", ">", "%", "&", "\\", "?", "/"];
+
 			const matchingChars: string[] = invalidChars.filter((c) =>
 				property.includes(c),
 			);
+
 			if (matchingChars.length > 0) {
 				const error: string = localize(
 					"tagNameInvalidChars",
@@ -170,6 +179,7 @@ class TagVisitor implements jsonc.JSONVisitor {
 			}
 
 			const maxTags: number = 50;
+
 			if (this._tagCount > maxTags) {
 				this.addError(
 					range,
@@ -199,13 +209,16 @@ class TagVisitor implements jsonc.JSONVisitor {
 			startLine,
 			startChar + length,
 		);
+
 		const actualType: string = typeof value;
+
 		if (this._objectOpenBracketPositions.length === 0) {
 			this.addTagsTypeError(range, actualType);
 		} else if (typeof value !== "string") {
 			this.addTagValueTypeError(range, actualType);
 		} else {
 			const max: number = 256;
+
 			if (value.length > max) {
 				this.addError(
 					range,

@@ -26,6 +26,7 @@ export async function createResource(
 	node?: SubscriptionItem,
 ): Promise<void> {
 	const picks = getPicks(getContributedCreateResourceCommands());
+
 	const pick: IAzureQuickPickItem<ContributedCreateResourceCommand> =
 		await context.ui.showQuickPick(picks, {
 			placeHolder: "Select a resource to create",
@@ -69,5 +70,6 @@ function getContributedCreateResourceCommands(): ContributedCreateResourceComman
 	extensions.all.forEach((extension) =>
 		createCommands.push(...(getCommandsForExtension(extension) ?? [])),
 	);
+
 	return createCommands;
 }

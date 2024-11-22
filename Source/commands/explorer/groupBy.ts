@@ -32,6 +32,7 @@ async function groupBy(
 			context,
 			ext.v2.api.resources.azureResourceTreeDataProvider,
 		);
+
 		const tag = await context.ui.showQuickPick(
 			getQuickPicks(context, subscription),
 			{
@@ -42,6 +43,7 @@ async function groupBy(
 				loadingPlaceHolder: localize("loadingTags", "Loading tags..."),
 			},
 		);
+
 		setting += `-${tag.label}`;
 	}
 
@@ -56,7 +58,9 @@ async function getQuickPicks(
 		context,
 		createSubscriptionContext(subscription),
 	]);
+
 	const tags = await uiUtils.listAllIterator(client.tagsOperations.list());
+
 	return tags.map((tag) => ({
 		label: nonNullProp(tag, "tagName"),
 	}));

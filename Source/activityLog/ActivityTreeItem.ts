@@ -43,6 +43,7 @@ export class ActivityTreeItem
 			"azureActivity",
 			...(this.state.contextValuesToAdd ?? []),
 		]);
+
 		return Array.from(contextValues).sort().join(";");
 	}
 
@@ -151,6 +152,7 @@ export class ActivityTreeItem
 			async (context) => {
 				this.state = data;
 				this.status = ActivityStatus.Done;
+
 				if (this.state.getChildren) {
 					this.initialCollapsibleState =
 						TreeItemCollapsibleState.Expanded;

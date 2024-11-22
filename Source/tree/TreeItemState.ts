@@ -43,6 +43,7 @@ export class TreeItemStateStore implements vscode.Disposable {
 		) as typeof item.getTreeItem;
 		item.getTreeItem = async () => {
 			const treeItem = await getTreeItem();
+
 			if (treeItem.id) {
 				return this.applyToTreeItem({ ...treeItem, id: treeItem.id });
 			}
@@ -71,6 +72,7 @@ export class TreeItemStateStore implements vscode.Disposable {
 			temporaryDescription: description,
 			spinner: true,
 		});
+
 		try {
 			result = await callback();
 		} finally {
@@ -112,6 +114,7 @@ export class TreeItemStateStore implements vscode.Disposable {
 		treeItem: vscode.TreeItem & { id: string },
 	): vscode.TreeItem {
 		const state = this.getState(treeItem.id);
+
 		return this.applyStateToTreeItem(state, { ...treeItem });
 	}
 

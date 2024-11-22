@@ -112,7 +112,9 @@ export class AzureResourceTreeDataProvider extends AzureResourceTreeDataProvider
 					];
 				} else if (await subscriptionProvider.isSignedIn()) {
 					this.sendSubscriptionTelemetryIfNeeded();
+
 					let subscriptions: AzureSubscription[];
+
 					if (
 						(subscriptions =
 							await subscriptionProvider.getSubscriptions(true))
@@ -231,10 +233,12 @@ export class AzureResourceTreeDataProvider extends AzureResourceTreeDataProvider
 
 				const subscriptionProvider =
 					await this.getAzureSubscriptionProvider();
+
 				const subscriptions =
 					await subscriptionProvider.getSubscriptions(false);
 
 				const tenantSet = new Set<string>();
+
 				const subscriptionSet = new Set<string>();
 				subscriptions.forEach((sub) => {
 					tenantSet.add(sub.tenantId);

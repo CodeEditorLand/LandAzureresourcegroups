@@ -26,6 +26,7 @@ export function getAzureExtensions(): AzExtWrapper[] {
 
 export function getInstalledAzureExtensions(): AzExtWrapper[] {
 	const azExtensions: AzExtWrapper[] = getAzureExtensions();
+
 	return azExtensions.filter((e) => !!e.getCodeExtension());
 }
 
@@ -86,6 +87,7 @@ export class AzExtWrapper {
 			const commandIs: string[] = await commands.getCommands(
 				true /* filterInternal */,
 			);
+
 			if (commandIs.some((c) => c === this._data.reportIssueCommandId)) {
 				// We want to verify because older versions of the Azure extensions might not support the "report issue" command yet
 				this._verifiedReportIssueCommandId =

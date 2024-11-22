@@ -59,6 +59,7 @@ function convertAppResourceFilterToAzExtResourceType(
 	}
 
 	filter = Array.isArray(filter) ? filter : [filter];
+
 	return filterMap(filter, getAzExtResourceType);
 }
 
@@ -67,8 +68,10 @@ function filterMap<T, TMapped>(
 	predicateMapper: (item: T, index: number) => TMapped | null | undefined,
 ): TMapped[] {
 	let index = 0;
+
 	return source.reduce<TMapped[]>((accumulator, current) => {
 		const mapped = predicateMapper(current, index++);
+
 		if (mapped !== null && mapped !== undefined) {
 			accumulator.push(mapped);
 		}

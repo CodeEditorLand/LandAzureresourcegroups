@@ -22,7 +22,9 @@ export class BranchDataItemCache {
 		item: ResourceGroupsItem,
 	): void {
 		this.branchItemToResourceGroupsItemCache.set(branchItem, item);
+
 		const id = this.getIdForBranchItem(branchItem);
+
 		if (id) {
 			this.idToBranchItemCache.set(id, branchItem);
 		}
@@ -43,10 +45,12 @@ export class BranchDataItemCache {
 		branchItem: ResourceModelBase,
 	): ResourceGroupsItem | undefined {
 		const id = this.getIdForBranchItem(branchItem);
+
 		if (!id) {
 			return undefined;
 		}
 		const cachedBranchItem = this.idToBranchItemCache.get(id);
+
 		return cachedBranchItem
 			? this.branchItemToResourceGroupsItemCache.get(cachedBranchItem)
 			: undefined;
@@ -59,9 +63,11 @@ export class BranchDataItemCache {
 		const cachedItem = this.getItemForBranchItemById(branchItem) as
 			| T
 			| undefined;
+
 		if (cachedItem) {
 			cachedItem.branchItem = branchItem;
 			this.addBranchItem(branchItem, cachedItem);
+
 			return cachedItem;
 		}
 		return createItem();

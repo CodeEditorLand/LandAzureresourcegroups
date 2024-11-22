@@ -30,9 +30,11 @@ export async function selectSubscriptions(
 	options?: SelectSubscriptionOptions,
 ): Promise<void> {
 	const provider = await ext.subscriptionProviderFactory();
+
 	if (await provider.isSignedIn()) {
 		const selectedSubscriptionsWithFullId =
 			await getSelectedTenantAndSubscriptionIds();
+
 		const selectedSubscriptionIds = selectedSubscriptionsWithFullId.map(
 			(id) => id.split("/")[1],
 		);
@@ -43,6 +45,7 @@ export async function selectSubscriptions(
 			IAzureQuickPickItem<AzureSubscription>[]
 		> = async () => {
 			const allSubscriptions = await provider.getSubscriptions(false);
+
 			const subscriptionsFilteredByTenant = options?.tenantId
 				? allSubscriptions.filter(
 						(subscription) =>
@@ -53,6 +56,7 @@ export async function selectSubscriptions(
 			subscriptionsShownInPicker = subscriptionsFilteredByTenant.map(
 				(sub) => `${sub.tenantId}/${sub.subscriptionId}`,
 			);
+
 			return subscriptionsFilteredByTenant
 				.map((subscription) => ({
 					label: subscription.name,
@@ -134,8 +138,10 @@ export async function getSelectedTenantAndSubscriptionIds(): Promise<string[]> {
 		settingUtils.getGlobalSetting<string[] | undefined>(
 			"selectedSubscriptions",
 		) ?? [];
+
 	if (selectedSubscriptionIds?.some((id) => !id.includes("/"))) {
 		await setSelectedTenantAndSubscriptionIds([]);
+
 		return [];
 	}
 

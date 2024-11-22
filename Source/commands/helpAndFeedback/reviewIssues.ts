@@ -15,10 +15,12 @@ import { localize } from "../../utils/localize";
 export async function reviewIssues(context: IActionContext): Promise<void> {
 	const picks: IAzureQuickPickItem<AzExtWrapper>[] =
 		getInstalledExtensionPicks();
+
 	const placeHolder: string = localize(
 		"selectExtension",
 		"Select the Azure extension you want to review issues for",
 	);
+
 	const azExtension: AzExtWrapper = (
 		await context.ui.showQuickPick(picks, {
 			placeHolder,

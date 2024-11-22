@@ -82,6 +82,7 @@ function createGroupingManager(
 ): AzureResourceGroupingManager {
 	const branchDataItemFactory =
 		createResourceItemFactory<AzureResource>(itemCache);
+
 	const groupingItemFactory = new GroupingItemFactory({
 		resourceItemFactory: branchDataItemFactory,
 		branchDataProviderFactory: (r) =>
@@ -93,5 +94,6 @@ function createGroupingManager(
 			hideSeparators: false,
 		},
 	});
+
 	return new AzureResourceGroupingManager(groupingItemFactory);
 }

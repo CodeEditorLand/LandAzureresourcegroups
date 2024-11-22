@@ -95,4 +95,5 @@ export abstract class AzureResourceTreeDataProviderBase extends ResourceTreeData
 }
 
 let nextSessionChangeMessageMinimumTime = 0;
+
 const sessionChangeMessageInterval = 1 * 1000; // 1 second

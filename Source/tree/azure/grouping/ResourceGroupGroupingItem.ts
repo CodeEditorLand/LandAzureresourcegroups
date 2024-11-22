@@ -68,6 +68,7 @@ export class ResourceGroupGroupingItem extends GroupingItem {
 		const showHiddenTypes = settingUtils.getWorkspaceSetting<boolean>(
 			showHiddenTypesSettingKey,
 		);
+
 		if (showHiddenTypes) {
 			return resources;
 		}

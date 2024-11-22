@@ -21,6 +21,7 @@ export function getSubscriptionProviderFactory(
 	const useAzureFederatedCredentials: boolean = !/^(false|0)?$/i.test(
 		process.env["AzCode_UseAzureFederatedCredentials"] || "",
 	);
+
 	if (useAzureFederatedCredentials) {
 		// when running tests, ensure we throw the errors and they aren't silently swallowed
 		if (activateContext) {
@@ -30,8 +31,10 @@ export function getSubscriptionProviderFactory(
 
 		const serviceConnectionId: string | undefined =
 			process.env["AzCode_ServiceConnectionID"];
+
 		const domain: string | undefined =
 			process.env["AzCode_ServiceConnectionDomain"];
+
 		const clientId: string | undefined =
 			process.env["AzCode_ServiceConnectionClientID"];
 
@@ -48,6 +51,7 @@ export function getSubscriptionProviderFactory(
 			domain,
 			clientId,
 		};
+
 		return createAzureDevOpsSubscriptionProviderFactory(initializer);
 	} else {
 		return createVSCodeAzureSubscriptionProviderFactory();

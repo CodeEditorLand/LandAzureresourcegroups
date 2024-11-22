@@ -35,6 +35,7 @@ export function registerWorkspaceTree(
 	} = options;
 
 	const branchItemCache = new BranchDataItemCache();
+
 	const workspaceResourceTreeDataProvider =
 		new WorkspaceResourceTreeDataProvider(
 			workspaceResourceBranchDataProviderManager,

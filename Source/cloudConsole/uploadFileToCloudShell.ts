@@ -17,8 +17,10 @@ async function cloudConsole(os: OSName) {
 		await ext.subscriptionProviderFactory(),
 		os,
 	);
+
 	if (shell) {
 		void shell.terminal?.then((terminal) => terminal.show());
+
 		return shell;
 	}
 
@@ -39,6 +41,7 @@ export async function uploadFileToCloudShell(
 			);
 		}
 		let shell = shells[0];
+
 		if (!shell) {
 			const shellName = await window.showInformationMessage(
 				localize(
@@ -48,6 +51,7 @@ export async function uploadFileToCloudShell(
 				OSes.Linux.shellName,
 				OSes.Windows.shellName,
 			);
+
 			if (!shellName) {
 				return;
 			}
@@ -61,6 +65,7 @@ export async function uploadFileToCloudShell(
 		}
 		if (uri) {
 			const filename = basename(uri.fsPath);
+
 			return window.withProgress(
 				{
 					location: ProgressLocation.Notification,

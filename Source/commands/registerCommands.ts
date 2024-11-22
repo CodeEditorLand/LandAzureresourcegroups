@@ -191,6 +191,7 @@ async function handleAzExtTreeItemRefresh(
 ): Promise<void> {
 	if (node instanceof BranchDataItemWrapper) {
 		const item = node.unwrap<AzExtTreeItem | unknown>();
+
 		if (isAzExtTreeItem(item)) {
 			await item.refresh(context);
 		}

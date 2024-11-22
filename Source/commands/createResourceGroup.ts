@@ -32,6 +32,7 @@ export async function createResourceGroup(
 	node?: SubscriptionItem,
 ): Promise<void> {
 	let subscription: AzureSubscription | undefined = node?.subscription;
+
 	if (!subscription) {
 		subscription = await subscriptionExperience(
 			context,
@@ -51,16 +52,20 @@ export async function createResourceGroup(
 		"createResourceGroup",
 		"Create Resource Group",
 	);
+
 	const promptSteps: AzureWizardPromptStep<IResourceGroupWizardContext>[] = [
 		new ResourceGroupNameStep(),
 	];
 	LocationListStep.addStep(wizardContext, promptSteps);
+
 	const executeSteps: AzureWizardExecuteStep<IResourceGroupWizardContext>[] =
 		[new ResourceGroupCreateStep()];
+
 	const wizard: AzureWizard<
 		IResourceGroupWizardContext & ExecuteActivityContext
 	> = new AzureWizard(wizardContext, { title, promptSteps, executeSteps });
 	await wizard.prompt();
+
 	const newResourceGroupName = nonNullProp(
 		wizardContext,
 		"newResourceGroupName",
@@ -71,6 +76,7 @@ export async function createResourceGroup(
 		newResourceGroupName,
 	);
 	await wizard.execute();
+
 	if (!wizardContext.suppressNotification) {
 		void window.showInformationMessage(
 			localize(

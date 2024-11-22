@@ -28,6 +28,7 @@ export async function revealResource(
 			ext.v2.api.resources
 				.azureResourceTreeDataProvider as ResourceTreeDataProviderBase
 		).findItemById(resourceId);
+
 		if (item) {
 			await ext.appResourceTreeView.reveal(
 				item as unknown as AzExtTreeItem,
@@ -47,6 +48,7 @@ function setTelemetryPropertiesForId(
 	resourceId: string,
 ): void {
 	const parsedAzureResourceId = parsePartialAzureResourceId(resourceId);
+
 	const resourceKind = getResourceKindFromId(parsedAzureResourceId);
 	context.telemetry.properties.resourceKind = resourceKind;
 
@@ -62,6 +64,7 @@ function parsePartialAzureResourceId(
 	const matches = id.match(
 		/^\/subscriptions\/([^\/]*)(\/resourceGroups\/([^\/]*)(\/providers\/([^\/]*\/[^\/]*)\/([^\/]*))?)?$/i,
 	);
+
 	return {
 		rawId: id,
 		subscriptionId: matches?.[1],

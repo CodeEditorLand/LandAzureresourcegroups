@@ -33,6 +33,7 @@ import { createResourceClient } from "../../utils/azureClients";
 import { localize } from "../../utils/localize";
 
 const insertKeyHere: string = localize("insertTagName", "<Insert tag name>");
+
 const insertValueHere: string = localize(
 	"insertTagValue",
 	"<Insert tag value>",
@@ -72,6 +73,7 @@ export class ResourceTags implements ITagsModel {
 					const subscriptionContext = createSubscriptionContext(
 						this.resource.subscription,
 					);
+
 					const client = await createResourceClient([
 						context,
 						subscriptionContext,
@@ -84,11 +86,13 @@ export class ResourceTags implements ITagsModel {
 								nonNullValue(this.resource.resourceGroup),
 							),
 						);
+
 						return resources.find((r) => r.id === this.id)?.tags;
 					} else {
 						const resourceGroup = await client.resourceGroups.get(
 							nonNullValue(this.resource.name),
 						);
+
 						return resourceGroup.tags;
 					}
 				},
@@ -111,6 +115,7 @@ export class TagFileSystem extends AzExtTreeFileSystem<ITagsModel> {
 		const fileContent: string = this.getFileContentFromTags(
 			await this.getTagsFromNode(model),
 		);
+
 		return {
 			type: FileType.File,
 			ctime: model.cTime,
@@ -126,6 +131,7 @@ export class TagFileSystem extends AzExtTreeFileSystem<ITagsModel> {
 		const fileContent: string = this.getFileContentFromTags(
 			await this.getTagsFromNode(node),
 		);
+
 		return Buffer.from(fileContent);
 	}
 
@@ -138,11 +144,13 @@ export class TagFileSystem extends AzExtTreeFileSystem<ITagsModel> {
 		// weird issue when in vscode.dev, the content Uint8Array has a giant byteOffset that causes it impossible to decode
 		// so re-form the buffer with 0 byteOffset
 		const buf = Buffer.from(content, 0);
+
 		const text: string = buf.toString("utf-8");
 
 		const diagnostics: Diagnostic[] = languages
 			.getDiagnostics(originalUri)
 			.filter((d) => d.severity === DiagnosticSeverity.Error);
+
 		if (diagnostics.length > 0) {
 			context.telemetry.measurements.tagDiagnosticsLength =
 				diagnostics.length;
@@ -150,6 +158,7 @@ export class TagFileSystem extends AzExtTreeFileSystem<ITagsModel> {
 			const showErrors: MessageItem = {
 				title: localize("showErrors", "Show Errors"),
 			};
+
 			const message: string = localize(
 				"errorsExist",
 				"Failed to upload tags for {0}.",
@@ -161,6 +170,7 @@ export class TagFileSystem extends AzExtTreeFileSystem<ITagsModel> {
 					if (result === showErrors) {
 						const openedUri: Uri | undefined =
 							window.activeTextEditor?.document.uri;
+
 						if (
 							!openedUri ||
 							originalUri.query !== openedUri.query
@@ -192,6 +202,7 @@ export class TagFileSystem extends AzExtTreeFileSystem<ITagsModel> {
 				"Are you sure you want to update tags for {0}?",
 				this.getDetailedName(model),
 			);
+
 			const update: MessageItem = { title: localize("update", "Update") };
 			await context.ui.showWarningMessage(
 				confirmMessage,
@@ -212,6 +223,7 @@ export class TagFileSystem extends AzExtTreeFileSystem<ITagsModel> {
 			const subscriptionContext = createSubscriptionContext(
 				model.subscription,
 			);
+
 			const client: ResourceManagementClient = await createResourceClient(
 				[context, subscriptionContext],
 			);
@@ -241,6 +253,7 @@ export class TagFileSystem extends AzExtTreeFileSystem<ITagsModel> {
 			"editAndSave",
 			"Edit and save this file to upload tags in Azure",
 		);
+
 		if (Object.keys(tags).length === 0) {
 			// Make sure to use a new object here because of https://github.com/microsoft/vscode-azureresourcegroups/issues/54
 			tags = {

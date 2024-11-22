@@ -21,7 +21,9 @@ import { ResourceGroupsItem } from "./ResourceGroupsItem";
 
 export type BranchDataItemOptions = {
 	contextValues?: string[];
+
 	defaultId?: string;
+
 	defaults?: vscode.TreeItem;
 	portalUrl?: vscode.Uri;
 	viewProperties?: ViewPropertiesModel;
@@ -120,6 +122,7 @@ export class BranchDataItemWrapper implements ResourceGroupsItem, Wrapper {
 			const branchItem = await this.branchDataProvider.getParent(
 				this.branchItem,
 			);
+
 			if (branchItem) {
 				return this.itemCache.getItemForBranchItem(branchItem);
 			}
@@ -134,6 +137,7 @@ export class BranchDataItemWrapper implements ResourceGroupsItem, Wrapper {
 
 	protected getExtraContextValues(): string[] {
 		const extraValues: string[] = [];
+
 		if (this.portalUrl) {
 			extraValues.push(BranchDataItemWrapper.hasPortalUrlContextValue);
 		}

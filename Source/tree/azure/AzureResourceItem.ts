@@ -52,6 +52,7 @@ export class AzureResourceItem<
 	override async getTreeItem(): Promise<TreeItem> {
 		const treeItem = await super.getTreeItem();
 		treeItem.id = this.id;
+
 		return treeItem;
 	}
 

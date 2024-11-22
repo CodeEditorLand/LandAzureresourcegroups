@@ -45,6 +45,7 @@ export class ActivityLogTreeItem
 					this,
 					activity,
 				);
+
 				if (
 					await settingUtils.getWorkspaceSetting(
 						"autoOpenActivityPanel",

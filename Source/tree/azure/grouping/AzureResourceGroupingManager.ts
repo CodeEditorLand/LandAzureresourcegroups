@@ -42,6 +42,7 @@ function groupBy({
 
 	const map = allResources.reduce((acc, resource) => {
 		const key = keySelector(resource);
+
 		let children = acc[key];
 
 		if (!children) {
@@ -64,6 +65,7 @@ function groupBy({
 			);
 		}
 	});
+
 	return groupingItems;
 }
 
@@ -140,6 +142,7 @@ export class AzureResourceGroupingManager extends vscode.Disposable {
 		const showHiddenTypes = settingUtils.getWorkspaceSetting<boolean>(
 			showHiddenTypesSettingKey,
 		);
+
 		if (!showHiddenTypes) {
 			const supportedResourceTypes: AzExtResourceType[] = azureExtensions
 				.map((e) => e.resourceTypes)
@@ -182,6 +185,7 @@ export class AzureResourceGroupingManager extends vscode.Disposable {
 		allResources: AzureResource[],
 	): GroupingItem[] {
 		const resourceGroups: AzureResource[] = [];
+
 		const nonResourceGroups: AzureResource[] = [];
 
 		allResources.forEach((resource) =>
@@ -215,6 +219,7 @@ export class AzureResourceGroupingManager extends vscode.Disposable {
 						resource.name.toLowerCase() ===
 						resourceGroupName.toLowerCase(),
 				);
+
 				return this.groupingItemFactory.createResourceGroupGroupingItem(
 					nonNullValue(
 						resourceGroup,
@@ -258,6 +263,7 @@ export class AzureResourceGroupingManager extends vscode.Disposable {
 		tag: string,
 	): GroupingItem[] {
 		const ungroupedKey = "ungrouped";
+
 		return groupBy({
 			allResources,
 			keySelector: (resource: AzureResource) =>

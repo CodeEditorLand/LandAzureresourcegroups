@@ -77,6 +77,7 @@ export class CompatibleResolvedApplicationResourceTreeItem extends AzExtParentTr
 				treeDataProvider,
 				azureResource,
 			);
+
 		return createResolvableProxy(resolvable);
 	}
 
@@ -107,6 +108,7 @@ export class CompatibleResolvedApplicationResourceTreeItem extends AzExtParentTr
 		this.contextValues.add(
 			CompatibleResolvedApplicationResourceTreeItem.contextValue,
 		);
+
 		if (azureResource.resourceType) {
 			this.contextValues.add(azureResource.resourceType);
 		}
@@ -159,11 +161,13 @@ export function createResolvableProxy<T extends AzExtParentTreeItem>(
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				resolvable.resolveResult[name] = value;
+
 				return true;
 			}
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			target[name] = value;
+
 			return true;
 		},
 		/**
@@ -183,5 +187,6 @@ export function createResolvableProxy<T extends AzExtParentTreeItem>(
 			return target;
 		},
 	};
+
 	return new Proxy(resolvable, providerHandler);
 }

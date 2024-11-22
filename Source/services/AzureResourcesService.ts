@@ -31,6 +31,7 @@ export const defaultAzureResourcesServiceFactory =
 			subscription: AzureSubscription,
 		): Promise<ResourceManagementClient> {
 			const subContext = createSubscriptionContext(subscription);
+
 			return await createResourceClient([context, subContext]);
 		}
 		return {
@@ -39,6 +40,7 @@ export const defaultAzureResourcesServiceFactory =
 				subscription: AzureSubscription,
 			): Promise<GenericResource[]> {
 				const client = await createClient(context, subscription);
+
 				return uiUtils.listAllIterator(client.resources.list());
 			},
 			async listResourceGroups(
@@ -46,6 +48,7 @@ export const defaultAzureResourcesServiceFactory =
 				subscription: AzureSubscription,
 			): Promise<ResourceGroup[]> {
 				const client = await createClient(context, subscription);
+
 				return uiUtils.listAllIterator(client.resourceGroups.list());
 			},
 		};

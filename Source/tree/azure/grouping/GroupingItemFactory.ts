@@ -27,6 +27,7 @@ export interface GroupingItemFactoryOptions {
 		azureResource: AzureResource,
 	) => AzureResourceBranchDataProvider<AzureResourceModel>;
 	onDidChangeBranchDataProviders: vscode.Event<AzExtResourceType>;
+
 	defaultDisplayOptions?: GroupingItemDisplayOptions;
 }
 
