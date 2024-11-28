@@ -17,6 +17,7 @@ import {
 import { contributesKey } from "./constants";
 
 let wrappers: AzExtWrapper[] | undefined;
+
 export function getAzureExtensions(): AzExtWrapper[] {
 	if (!wrappers) {
 		wrappers = azureExtensions.map((d) => new AzExtWrapper(d));
