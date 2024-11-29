@@ -56,6 +56,7 @@ export async function createResourceGroup(
 	const promptSteps: AzureWizardPromptStep<IResourceGroupWizardContext>[] = [
 		new ResourceGroupNameStep(),
 	];
+
 	LocationListStep.addStep(wizardContext, promptSteps);
 
 	const executeSteps: AzureWizardExecuteStep<IResourceGroupWizardContext>[] =
@@ -64,17 +65,20 @@ export async function createResourceGroup(
 	const wizard: AzureWizard<
 		IResourceGroupWizardContext & ExecuteActivityContext
 	> = new AzureWizard(wizardContext, { title, promptSteps, executeSteps });
+
 	await wizard.prompt();
 
 	const newResourceGroupName = nonNullProp(
 		wizardContext,
 		"newResourceGroupName",
 	);
+
 	wizardContext.activityTitle = localize(
 		"createResourceGroup",
 		'Create resource group "{0}"',
 		newResourceGroupName,
 	);
+
 	await wizard.execute();
 
 	if (!wizardContext.suppressNotification) {
@@ -86,6 +90,7 @@ export async function createResourceGroup(
 			),
 		);
 	}
+
 	ext.azureTreeState.notifyChildrenChanged(
 		`/subscriptions/${subscription.subscriptionId}`,
 	);

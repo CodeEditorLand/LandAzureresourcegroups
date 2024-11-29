@@ -41,11 +41,15 @@ const insertValueHere: string = localize(
 
 export interface ITagsModel extends AzExtTreeFileSystemItem {
 	getTags(): Promise<Tags["tags"]>;
+
 	subscription: AzureSubscription;
+
 	displayName: string;
+
 	displayType: "resource group" | "resource";
 
 	cTime: number;
+
 	mTime: number;
 }
 
@@ -57,12 +61,15 @@ export class ResourceTags implements ITagsModel {
 	}
 
 	readonly id: string = this.resource.id;
+
 	readonly subscription: AzureSubscription = this.resource.subscription;
 
 	readonly displayName: string = this.resource.name;
+
 	readonly displayType: ITagsModel["displayType"];
 
 	cTime!: number;
+
 	mTime!: number;
 
 	async getTags(): Promise<Tags["tags"]> {
@@ -106,6 +113,7 @@ export class ResourceTags implements ITagsModel {
  */
 export class TagFileSystem extends AzExtTreeFileSystem<ITagsModel> {
 	public static scheme: string = "azureResourceGroups";
+
 	public scheme: string = TagFileSystem.scheme;
 
 	public async statImpl(
@@ -164,6 +172,7 @@ export class TagFileSystem extends AzExtTreeFileSystem<ITagsModel> {
 				"Failed to upload tags for {0}.",
 				this.getDetailedName(model),
 			);
+
 			void window
 				.showErrorMessage(message, showErrors)
 				.then(async (result) => {
@@ -193,6 +202,7 @@ export class TagFileSystem extends AzExtTreeFileSystem<ITagsModel> {
 				)
 				.sort()
 				.join(",");
+
 			context.errorHandling.suppressDisplay = true;
 			// This won't be displayed, but might as well track the first diagnostic for telemetry
 			throw new Error(diagnostics[0].message);
@@ -204,6 +214,7 @@ export class TagFileSystem extends AzExtTreeFileSystem<ITagsModel> {
 			);
 
 			const update: MessageItem = { title: localize("update", "Update") };
+
 			await context.ui.showWarningMessage(
 				confirmMessage,
 				{ modal: true },
@@ -227,6 +238,7 @@ export class TagFileSystem extends AzExtTreeFileSystem<ITagsModel> {
 			const client: ResourceManagementClient = await createResourceClient(
 				[context, subscriptionContext],
 			);
+
 			await client.tagsOperations.updateAtScope(model.id, {
 				properties: { tags },
 				operation: "Replace",
@@ -237,7 +249,9 @@ export class TagFileSystem extends AzExtTreeFileSystem<ITagsModel> {
 				"Successfully updated tags for {0}.",
 				this.getDetailedName(model),
 			);
+
 			void window.showInformationMessage(updatedMessage);
+
 			ext.outputChannel.appendLog(updatedMessage);
 		}
 	}
@@ -260,6 +274,7 @@ export class TagFileSystem extends AzExtTreeFileSystem<ITagsModel> {
 				[insertKeyHere]: insertValueHere,
 			};
 		}
+
 		return `// ${comment}${os.EOL}${JSON.stringify(tags, undefined, 4)}`;
 	}
 

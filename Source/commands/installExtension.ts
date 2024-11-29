@@ -11,6 +11,7 @@ export async function installExtension(
 	extensionId: string,
 ): Promise<void> {
 	context.telemetry.properties.extensionId = extensionId;
+
 	await commands.executeCommand("extension.open", extensionId);
 
 	function isInstalled(): boolean {
@@ -18,6 +19,7 @@ export async function installExtension(
 	}
 
 	const alreadyInstalled = isInstalled();
+
 	context.telemetry.properties.alreadyInstalled = String(alreadyInstalled);
 
 	if (!alreadyInstalled) {
@@ -28,9 +30,13 @@ export async function installExtension(
 				if (isInstalled()) {
 					context.telemetry.properties.installedAfterOneMinute =
 						"true";
+
 					disposable.dispose();
+
 					clearTimeout(timeout);
+
 					resolve();
+
 					void extensions.getExtension(extensionId)?.activate();
 				}
 			});
@@ -40,6 +46,7 @@ export async function installExtension(
 			const timeout = setTimeout(
 				() => {
 					disposable.dispose();
+
 					resolve();
 				},
 				1000 * 60 * 1 /* 1 minute */,

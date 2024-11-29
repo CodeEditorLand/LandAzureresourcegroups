@@ -115,6 +115,7 @@ export async function selectSubscriptions(
 		const signIn: vscode.MessageItem = {
 			title: localize("signIn", "Sign In"),
 		};
+
 		void vscode.window
 			.showInformationMessage(
 				localize(

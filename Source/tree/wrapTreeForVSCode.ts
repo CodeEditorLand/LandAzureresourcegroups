@@ -46,6 +46,7 @@ class OnRefreshTreeDataProvider
 		if (!element) {
 			this.onRefresh();
 		}
+
 		return this.treeDataProvider.getChildren(element);
 	}
 

@@ -56,10 +56,12 @@ export class CompatibleApplicationResourceBranchDataProvider<
 				'Could not resolve resource "{0}"',
 				element.id,
 			);
+
 			ext.outputChannel.appendLog(noResolveError);
 
 			throw new Error(noResolveError);
 		}
+
 		const result = CompatibleResolvedApplicationResourceTreeItem.Create(
 			element,
 			resolved,
@@ -67,11 +69,13 @@ export class CompatibleApplicationResourceBranchDataProvider<
 			this,
 			element,
 		) as unknown as TModel;
+
 		Object.defineProperty(result, "fullId", {
 			get: () => {
 				return element.id;
 			},
 		});
+
 		Object.defineProperty(result, "id", {
 			get: () => {
 				return element.id;

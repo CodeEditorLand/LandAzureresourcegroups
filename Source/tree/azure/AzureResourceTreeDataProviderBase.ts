@@ -18,6 +18,7 @@ import { GroupingItem } from "./grouping/GroupingItem";
 
 export abstract class AzureResourceTreeDataProviderBase extends ResourceTreeDataProviderBase {
 	private subscriptionProvider: AzureSubscriptionProvider | undefined;
+
 	private statusSubscription: vscode.Disposable | undefined;
 
 	constructor(
@@ -41,6 +42,7 @@ export abstract class AzureResourceTreeDataProviderBase extends ResourceTreeData
 			state,
 			() => {
 				this.statusSubscription?.dispose();
+
 				callOnDispose?.();
 			},
 		);
@@ -59,6 +61,7 @@ export abstract class AzureResourceTreeDataProviderBase extends ResourceTreeData
 				id.toLowerCase().startsWith(resource.id.toLowerCase()),
 			);
 		}
+
 		return super.isAncestorOf(element, id);
 	}
 

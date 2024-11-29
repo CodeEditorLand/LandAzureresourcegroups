@@ -27,6 +27,7 @@ export async function getStarted(context: IActionContext): Promise<void> {
 			});
 		}
 	}
+
 	picks = picks.sort((a, b) => a.label.localeCompare(b.label));
 
 	const placeHolder: string = localize(
@@ -40,6 +41,8 @@ export async function getStarted(context: IActionContext): Promise<void> {
 			suppressPersistence: true,
 		})
 	).data;
+
 	context.telemetry.properties.extension = extension.name;
+
 	await openUrl(nonNullProp(extension, "tutorial").url);
 }

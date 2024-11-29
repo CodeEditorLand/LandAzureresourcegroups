@@ -34,12 +34,14 @@ export class SubscriptionItem implements ResourceGroupsItem {
 		};
 
 		this.id = `/subscriptions/${this.subscription.subscriptionId}`;
+
 		this.portalUrl = createPortalUrl(this.subscription, this.id);
 	}
 
 	public readonly portalUrl: vscode.Uri;
 
 	public readonly id: string;
+
 	public readonly subscription: ISubscriptionContext & AzureSubscription;
 
 	async getChildren(): Promise<ResourceGroupsItem[]> {
@@ -51,11 +53,13 @@ export class SubscriptionItem implements ResourceGroupsItem {
 						await this.resourceProviderManager.getResources(
 							this.subscription,
 						);
+
 					context.telemetry.measurements.resourceCount =
 						resources.length;
 
 					const groupBySetting =
 						settingUtils.getWorkspaceSetting<string>("groupBy");
+
 					context.telemetry.properties.groupBySetting =
 						groupBySetting?.startsWith("armTag")
 							? "armTag"
@@ -69,6 +73,7 @@ export class SubscriptionItem implements ResourceGroupsItem {
 							groupBySetting,
 						)
 						.sort((a, b) => a.label.localeCompare(b.label));
+
 					context.telemetry.measurements.groupCount =
 						groupingItems.length;
 
@@ -85,7 +90,9 @@ export class SubscriptionItem implements ResourceGroupsItem {
 		);
 
 		treeItem.contextValue = "azureextensionui.azureSubscription";
+
 		treeItem.iconPath = treeUtils.getIconPath("azureSubscription");
+
 		treeItem.id = this.id;
 
 		return treeItem;

@@ -40,6 +40,7 @@ export async function uploadFileToCloudShell(
 				),
 			);
 		}
+
 		let shell = shells[0];
 
 		if (!shell) {
@@ -60,9 +61,11 @@ export async function uploadFileToCloudShell(
 				shellName === OSes.Linux.shellName ? "Linux" : "Windows",
 			))!;
 		}
+
 		if (!uri) {
 			uri = ((await window.showOpenDialog({})) || [])[0];
 		}
+
 		if (uri) {
 			const filename = basename(uri.fsPath);
 

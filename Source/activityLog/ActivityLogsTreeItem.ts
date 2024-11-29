@@ -21,6 +21,7 @@ export class ActivityLogTreeItem
 	implements Disposable
 {
 	public label: string = localize("activityLog", "Activity Log");
+
 	public contextValue: string = "azureActivityLog";
 
 	private activityTreeItems: Record<string, ActivityTreeItem> = {};
@@ -53,6 +54,7 @@ export class ActivityLogTreeItem
 				) {
 					await commands.executeCommand("azureActivityLog.focus");
 				}
+
 				await this.refresh(context);
 			},
 		);
@@ -63,10 +65,12 @@ export class ActivityLogTreeItem
 			([id, activity]: [string, ActivityTreeItem]) => {
 				if (activity.status === ActivityStatus.Done) {
 					activity.dispose();
+
 					delete this.activityTreeItems[id];
 				}
 			},
 		);
+
 		await this.refresh(context);
 	}
 

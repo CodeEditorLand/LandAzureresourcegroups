@@ -38,11 +38,14 @@ export class AzureResourceItem<
 			type: FileChangeType.Changed,
 			item: this.tagsModel,
 		});
+
 		this.portalUrl = createPortalUrl(resource.subscription, resource.id);
 	}
 
 	override readonly portalUrl: Uri;
+
 	readonly id = this.resource.id;
+
 	readonly tagsModel = new ResourceTags(this.resource);
 
 	override async getParent(): Promise<ResourceGroupsItem | undefined> {
@@ -51,6 +54,7 @@ export class AzureResourceItem<
 
 	override async getTreeItem(): Promise<TreeItem> {
 		const treeItem = await super.getTreeItem();
+
 		treeItem.id = this.id;
 
 		return treeItem;

@@ -75,6 +75,7 @@ function filterMap<T, TMapped>(
 		if (mapped !== null && mapped !== undefined) {
 			accumulator.push(mapped);
 		}
+
 		return accumulator;
 	}, []);
 }

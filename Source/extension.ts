@@ -68,38 +68,49 @@ export async function activate(
 	perfStats ||= { loadStartTime: Date.now(), loadEndTime: Date.now() };
 
 	ext.context = context;
+
 	ext.ignoreBundle = ignoreBundle;
+
 	ext.outputChannel = createAzExtLogOutputChannel("Azure Resource Groups");
+
 	context.subscriptions.push(ext.outputChannel);
+
 	context.subscriptions.push(setupAzureLogger(ext.outputChannel));
 
 	registerUIExtensionVariables(ext);
+
 	registerAzureUtilsExtensionVariables(ext);
 
 	const refreshAzureTreeEmitter = new vscode.EventEmitter<
 		void | ResourceGroupsItem | ResourceGroupsItem[] | null | undefined
 	>();
+
 	context.subscriptions.push(refreshAzureTreeEmitter);
 
 	const refreshFocusTreeEmitter = new vscode.EventEmitter<
 		void | ResourceGroupsItem | ResourceGroupsItem[] | null | undefined
 	>();
+
 	context.subscriptions.push(refreshFocusTreeEmitter);
 
 	const refreshWorkspaceTreeEmitter = new vscode.EventEmitter<
 		void | ResourceGroupsItem | ResourceGroupsItem[] | null | undefined
 	>();
+
 	context.subscriptions.push(refreshWorkspaceTreeEmitter);
 
 	ext.actions.refreshWorkspaceTree = (data) =>
 		refreshWorkspaceTreeEmitter.fire(data);
+
 	ext.actions.refreshAzureTree = (data) => refreshAzureTreeEmitter.fire(data);
+
 	ext.actions.refreshFocusTree = (data) => refreshFocusTreeEmitter.fire(data);
 
 	await callWithTelemetryAndErrorHandling(
 		"azureResourceGroups.activate",
 		async (activateContext: IActionContext) => {
 			activateContext.telemetry.properties.isActivationEvent = "true";
+
 			activateContext.telemetry.measurements.mainFileLoad =
 				(perfStats.loadEndTime - perfStats.loadStartTime) / 1000;
 
@@ -107,22 +118,26 @@ export async function activate(
 				getSubscriptionProviderFactory(activateContext);
 
 			ext.tagFS = new TagFileSystem(ext.appResourceTree);
+
 			context.subscriptions.push(
 				vscode.workspace.registerFileSystemProvider(
 					TagFileSystem.scheme,
 					ext.tagFS,
 				),
 			);
+
 			registerTagDiagnostics();
 
 			ext.experimentationService =
 				await createExperimentationService(context);
 
 			const helpTreeItem: HelpTreeItem = new HelpTreeItem();
+
 			ext.helpTree = new AzExtTreeDataProvider(
 				helpTreeItem,
 				"ms-azuretools.loadMore",
 			);
+
 			context.subscriptions.push(
 				vscode.window.createTreeView("ms-azuretools.helpAndFeedback", {
 					treeDataProvider: ext.helpTree,
@@ -132,10 +147,12 @@ export async function activate(
 			context.subscriptions.push(
 				(ext.activityLogTreeItem = new ActivityLogTreeItem()),
 			);
+
 			ext.activityLogTree = new AzExtTreeDataProvider(
 				ext.activityLogTreeItem,
 				"azureActivityLog.loadMore",
 			);
+
 			context.subscriptions.push(
 				vscode.window.createTreeView("azureActivityLog", {
 					treeDataProvider: ext.activityLogTree,
@@ -158,6 +175,7 @@ export async function activate(
 					},
 				),
 			);
+
 			context.subscriptions.push(
 				vscode.window.registerTerminalProfileProvider(
 					"azureResourceGroups.cloudShellPowerShell",
@@ -176,7 +194,9 @@ export async function activate(
 			);
 
 			registerCommands();
+
 			gitHubCopilotForAzureToast(context);
+
 			survey(context);
 		},
 	);
@@ -268,6 +288,7 @@ export async function activate(
 	ext.appResourceTree = new CompatibleAzExtTreeDataProvider(
 		azureResourceTreeDataProvider,
 	);
+
 	ext.workspaceTree = new CompatibleAzExtTreeDataProvider(
 		workspaceResourceTreeDataProvider,
 	);

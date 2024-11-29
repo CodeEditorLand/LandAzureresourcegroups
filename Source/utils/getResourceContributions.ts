@@ -10,12 +10,16 @@ import { contributesKey } from "../constants";
 interface ResourceGroupsContribution {
 	readonly azure: {
 		readonly branches?: { type: string }[];
+
 		readonly resources?: boolean;
 	};
+
 	readonly workspace: {
 		readonly branches?: { type: string }[];
+
 		readonly resources?: boolean;
 	};
+
 	readonly commands?: (vscode.Command & { detail?: string })[];
 }
 

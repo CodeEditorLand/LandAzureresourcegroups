@@ -23,7 +23,9 @@ import { getIconPath } from "../../../utils/azureUtils";
  */
 export class CompatibleResolvedApplicationResourceTreeItem extends AzExtParentTreeItem {
 	public static contextValue: string = "azureResource";
+
 	protected readonly contextValues: Set<string> = new Set<string>();
+
 	public get contextValue(): string {
 		return Array.from(this.contextValues.values()).sort().join(";");
 	}
@@ -36,11 +38,15 @@ export class CompatibleResolvedApplicationResourceTreeItem extends AzExtParentTr
 	public valuesToMask: string[] = [];
 
 	public readonly resolveResult: ResolvedAppResourceBase;
+
 	public data: AzureResource;
+
 	public readonly azExtResourceType!: AzExtResourceType;
 
 	public readonly cTime: number = Date.now();
+
 	public mTime: number = Date.now();
+
 	public tags?: { [propertyName: string]: string } | undefined;
 
 	public get label(): string {
@@ -101,8 +107,11 @@ export class CompatibleResolvedApplicationResourceTreeItem extends AzExtParentTr
 		}) as unknown as AzExtParentTreeItem);
 
 		this.resource = azureResource;
+
 		this.resolveResult = resolved;
+
 		this.data = resource;
+
 		this.tags = resource.tags;
 
 		this.contextValues.add(
@@ -112,6 +121,7 @@ export class CompatibleResolvedApplicationResourceTreeItem extends AzExtParentTr
 		if (azureResource.resourceType) {
 			this.contextValues.add(azureResource.resourceType);
 		}
+
 		resolved.contextValuesToAdd?.forEach((value: string) =>
 			this.contextValues.add(value),
 		);
@@ -184,6 +194,7 @@ export function createResolvableProxy<T extends AzExtParentTreeItem>(
 					? AzExtParentTreeItem.prototype
 					: AzExtTreeItem.prototype;
 			}
+
 			return target;
 		},
 	};

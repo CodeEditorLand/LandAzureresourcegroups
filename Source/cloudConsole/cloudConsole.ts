@@ -68,7 +68,9 @@ function getArmEndpoint(): string {
 
 interface OS {
 	id: "linux" | "windows";
+
 	shellName: string;
+
 	otherOS: OS;
 }
 
@@ -100,6 +102,7 @@ async function waitForConnection(this: CloudShell): Promise<boolean> {
 				return new Promise<boolean>((resolve) => {
 					const subs = this.onStatusChanged(() => {
 						subs.dispose();
+
 						resolve(handleStatus());
 					});
 				});
@@ -162,6 +165,7 @@ function getUploadFile(
 			});
 
 			const uploadUri: string = `${terminalUri}/upload`;
+
 			logAttemptingToReachUrlMessage(uploadUri);
 
 			const uri: UrlWithStringQuery = parse(uploadUri);
@@ -181,6 +185,7 @@ function getUploadFile(
 					if (err) {
 						reject(err);
 					}
+
 					if (
 						res &&
 						res.statusCode &&
@@ -190,6 +195,7 @@ function getUploadFile(
 					} else {
 						resolve();
 					}
+
 					if (res) {
 						res.resume(); // Consume response.
 					}
@@ -199,9 +205,11 @@ function getUploadFile(
 			if (options.token) {
 				options.token.onCancellationRequested(() => {
 					reject("canceled");
+
 					req.abort();
 				});
 			}
+
 			if (options.progress) {
 				req.on("socket", (socket: Socket) => {
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -215,6 +223,7 @@ function getUploadFile(
 					});
 
 					let previous: number = 0;
+
 					socket.on("drain", () => {
 						const total: number = req.getHeader(
 							"Content-Length",
@@ -239,6 +248,7 @@ function getUploadFile(
 									increment,
 								});
 							}
+
 							previous = worked;
 						}
 					});
@@ -260,6 +270,7 @@ export function createCloudConsole(
 		"azureResourceGroups.createCloudConsole",
 		(context: IActionContext) => {
 			const os: OS = OSes[osName];
+
 			context.telemetry.properties.cloudShellType = os.shellName;
 
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -317,15 +328,21 @@ export function createCloudConsole(
 
 			function updateStatus(status: CloudShellStatus) {
 				state.status = status;
+
 				event.fire(state.status);
 
 				if (status === "Disconnected") {
 					deferredTerminal.reject(status);
+
 					deferredTerminalProfile.reject(status);
 					// deferredSession.reject(status);
+
 					deferredTokens.reject(status);
+
 					deferredUris.reject(status);
+
 					shells.splice(shells.indexOf(state), 1);
+
 					void commands.executeCommand(
 						"setContext",
 						"azureResourcesOpenCloudConsoleCount",
@@ -411,7 +428,9 @@ export function createCloudConsole(
 								// ignore timeout
 							}
 						}
+
 						res.write(JSON.stringify(response));
+
 						res.end();
 					},
 				);
@@ -444,6 +463,7 @@ export function createCloudConsole(
 						// We used to delay for a second then exit here, but then the user can't read or copy the error message
 						// await delay(1000);
 						// serverQueue.push({ type: 'exit' });
+
 						updateStatus("Disconnected");
 
 						return;
@@ -458,6 +478,7 @@ export function createCloudConsole(
 				if (!isWindows) {
 					// Needed to fork a child process as a node.js process from within the application
 					env["ELECTRON_RUN_AS_NODE"] = "1";
+
 					env["ELECTRON_NO_ASAR"] = "1";
 				}
 
@@ -473,6 +494,7 @@ export function createCloudConsole(
 						"\\\\",
 					);
 				}
+
 				const terminalOptions: TerminalOptions = {
 					name: localize(
 						"azureCloudShell",
@@ -491,7 +513,9 @@ export function createCloudConsole(
 
 				const cleanupCloudShell = () => {
 					liveServerQueue = undefined;
+
 					server.dispose();
+
 					updateStatus("Disconnected");
 				};
 
@@ -501,6 +525,7 @@ export function createCloudConsole(
 					const terminalProfileCloseSubscription =
 						terminalProfileToken.onCancellationRequested(() => {
 							terminalProfileCloseSubscription.dispose();
+
 							cleanupCloudShell();
 						});
 
@@ -517,6 +542,7 @@ export function createCloudConsole(
 						(t) => {
 							if (t === terminal) {
 								terminalCloseSubscription.dispose();
+
 								cleanupCloudShell();
 							}
 						},
@@ -547,6 +573,7 @@ export function createCloudConsole(
 					// This also checks if this tenant is authenticated.
 					// If a tenant is not authenticated, users will have to use the "Sign in to Directory..." command before launching cloud shell.
 					const tenantsIdsWithSubs = new Set<string>();
+
 					subscriptions.forEach((sub) => {
 						tenantsIdsWithSubs.add(sub.tenantId);
 					});
@@ -554,6 +581,7 @@ export function createCloudConsole(
 					const tenantsWithSubs = tenants.filter((tenant) =>
 						tenantsIdsWithSubs.has(nonNullProp(tenant, "tenantId")),
 					);
+
 					serverQueue.push({
 						type: "log",
 						args: [
@@ -607,14 +635,18 @@ export function createCloudConsole(
 						if (!pick) {
 							context.telemetry.properties.outcome =
 								"noTenantPicked";
+
 							serverQueue.push({ type: "exit" });
+
 							updateStatus("Disconnected");
 
 							return;
 						}
+
 						selectedTenant = pick.data;
 					}
 				}
+
 				serverQueue.push({
 					type: "log",
 					args: [
@@ -641,6 +673,7 @@ export function createCloudConsole(
 							),
 						],
 					});
+
 					updateStatus("Disconnected");
 
 					return;
@@ -660,6 +693,7 @@ export function createCloudConsole(
 							),
 						],
 					});
+
 					updateStatus("Disconnected");
 
 					return;
@@ -672,8 +706,11 @@ export function createCloudConsole(
 						type: "log",
 						args: [localize("setupNeeded", "Setup needed.")],
 					});
+
 					await requiresSetUp(context);
+
 					serverQueue.push({ type: "exit" });
+
 					updateStatus("Disconnected");
 
 					return;
@@ -688,6 +725,7 @@ export function createCloudConsole(
 						result,
 						OSes.Linux.id,
 					);
+
 					context.telemetry.properties.outcome = "provisioned";
 				};
 
@@ -701,6 +739,7 @@ export function createCloudConsole(
 							),
 						],
 					});
+
 					await provisionTask();
 				} catch (err) {
 					if (
@@ -718,6 +757,7 @@ export function createCloudConsole(
 							return provisionTask();
 						} else {
 							serverQueue.push({ type: "exit" });
+
 							updateStatus("Disconnected");
 
 							return;
@@ -735,6 +775,7 @@ export function createCloudConsole(
 					"connectingTerminal",
 					"Connecting terminal...",
 				);
+
 				serverQueue.push({ type: "log", args: [connecting] });
 
 				const progressTask: (i: number) => void = (i: number) => {
@@ -766,11 +807,16 @@ export function createCloudConsole(
 				});
 			})().catch((err) => {
 				const parsedError: IParsedError = parseError(err);
+
 				ext.outputChannel.appendLog(parsedError.message);
+
 				parsedError.stack &&
 					ext.outputChannel.appendLog(parsedError.stack);
+
 				updateStatus("Disconnected");
+
 				context.telemetry.properties.outcome = "error";
+
 				context.telemetry.properties.message = parsedError.message;
 
 				if (liveServerQueue) {
@@ -824,6 +870,7 @@ async function requiresSetUp(context: IActionContext) {
 
 	if (response === open) {
 		context.telemetry.properties.outcome = "requiresSetUpOpen";
+
 		void env.openExternal(Uri.parse("https://shell.azure.com"));
 	} else {
 		context.telemetry.properties.outcome = "requiresSetUpCancel";
@@ -845,6 +892,7 @@ async function requiresNode(context: IActionContext) {
 
 	if (response === open) {
 		context.telemetry.properties.outcome = "requiresNodeOpen";
+
 		void env.openExternal(Uri.parse("https://nodejs.org"));
 	} else {
 		context.telemetry.properties.outcome = "requiresNodeCancel";
@@ -882,6 +930,7 @@ async function deploymentConflict(context: IActionContext, os: OS) {
 	);
 
 	const reset: boolean = response === ok;
+
 	context.telemetry.properties.outcome = reset
 		? "deploymentConflictReset"
 		: "deploymentConflictCancel";
@@ -891,7 +940,9 @@ async function deploymentConflict(context: IActionContext, os: OS) {
 
 export interface ExecResult {
 	error: Error | null;
+
 	stdout: string;
+
 	stderr: string;
 }
 
@@ -915,26 +966,32 @@ function getConsoleUri(armEndpoint: string) {
 
 export interface UserSettings {
 	preferredLocation: string;
+
 	preferredOsType: string; // The last OS chosen in the portal.
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	storageProfile: any;
+
 	sessionType: "Ephemeral" | "Mounted";
 }
 
 export interface AccessTokens {
 	resource: string;
 	// graph: string;
+
 	keyVault?: string;
 }
 
 export interface ConsoleUris {
 	consoleUri: string;
+
 	terminalUri: string;
+
 	socketUri: string;
 }
 
 export interface Size {
 	cols: number;
+
 	rows: number;
 }
 
@@ -975,7 +1032,9 @@ export async function provisionConsole(
 
 	for (
 		let i = 0;
+
 		i < 10;
+
 		i++,
 			response = await createTerminal(
 				accessToken,
@@ -1012,6 +1071,7 @@ export async function provisionConsole(
 			break;
 		}
 	}
+
 	throw new Error(
 		`Sorry, your Cloud Shell failed to provision. Please retry later. Request correlation id: ${response.headers.get("x-ms-routing-request-id")}`,
 	);
@@ -1102,7 +1162,9 @@ export async function connectTerminal(
 					);
 				}
 			}
+
 			await delay(1000 * (i + 1));
+
 			progress(i + 1);
 
 			continue;

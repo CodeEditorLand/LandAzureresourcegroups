@@ -76,6 +76,7 @@ export abstract class CompatibleBranchDataProviderBase<
 		context: ITreeItemPickerContext & { canPickMany: true },
 		startingTreeItem?: AzExtTreeItem,
 	): Promise<T[]>;
+
 	public override async showTreeItemPicker<T extends AzExtTreeItem>(
 		_expectedContextValues: string | RegExp | (string | RegExp)[],
 		_context: ITreeItemPickerContext,
@@ -111,6 +112,7 @@ export abstract class CompatibleBranchDataProviderBase<
 
 	public dispose(): void {
 		super.dispose();
+
 		this.overrideOnDidChangeTreeDataEmitter.dispose();
 	}
 }

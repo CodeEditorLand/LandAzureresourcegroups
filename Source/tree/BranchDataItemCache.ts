@@ -14,6 +14,7 @@ export class BranchDataItemCache {
 		ResourceModelBase,
 		ResourceGroupsItem
 	> = new Map();
+
 	private readonly idToBranchItemCache: Map<string, ResourceModelBase> =
 		new Map();
 
@@ -32,6 +33,7 @@ export class BranchDataItemCache {
 
 	clear(): void {
 		this.branchItemToResourceGroupsItemCache.clear();
+
 		this.idToBranchItemCache.clear();
 	}
 
@@ -49,6 +51,7 @@ export class BranchDataItemCache {
 		if (!id) {
 			return undefined;
 		}
+
 		const cachedBranchItem = this.idToBranchItemCache.get(id);
 
 		return cachedBranchItem
@@ -66,10 +69,12 @@ export class BranchDataItemCache {
 
 		if (cachedItem) {
 			cachedItem.branchItem = branchItem;
+
 			this.addBranchItem(branchItem, cachedItem);
 
 			return cachedItem;
 		}
+
 		return createItem();
 	}
 

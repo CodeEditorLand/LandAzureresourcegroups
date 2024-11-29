@@ -42,6 +42,7 @@ export async function viewProperties(
 	const data = isAsyncViewPropertiesModel(node.viewProperties)
 		? await node.viewProperties.getData()
 		: node.viewProperties.data;
+
 	await openReadOnlyJson(
 		{ fullId: node.id ?? uuidv4(), label: node.viewProperties.label },
 		data,

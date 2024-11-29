@@ -64,7 +64,9 @@ export class AzureResourceTreeDataProvider extends AzureResourceTreeDataProvider
 				e: vscode.ConfigurationChangeEvent,
 			) => {
 				context.errorHandling.suppressDisplay = true;
+
 				context.telemetry.suppressIfSuccessful = true;
+
 				context.telemetry.properties.isActivationEvent = "true";
 
 				if (
@@ -112,12 +114,15 @@ export class AzureResourceTreeDataProvider extends AzureResourceTreeDataProvider
 					];
 				} else if (await subscriptionProvider.isSignedIn()) {
 					this.sendSubscriptionTelemetryIfNeeded();
+
 					let subscriptions: AzureSubscription[];
+
 					await vscode.commands.executeCommand(
 						"setContext",
 						"azureResourceGroups.needsTenantAuth",
 						false,
 					);
+
 					if (
 						(subscriptions =
 							await subscriptionProvider.getSubscriptions(true))
@@ -139,6 +144,7 @@ export class AzureResourceTreeDataProvider extends AzureResourceTreeDataProvider
 								"azureResourceGroups.needsTenantAuth",
 								true,
 							);
+
 							return [];
 						} else {
 							return [
@@ -215,10 +221,12 @@ export class AzureResourceTreeDataProvider extends AzureResourceTreeDataProvider
 	}
 
 	private hasSentSubscriptionTelemetry = false;
+
 	private sendSubscriptionTelemetryIfNeeded(): void {
 		if (this.hasSentSubscriptionTelemetry) {
 			return;
 		}
+
 		this.hasSentSubscriptionTelemetry = true;
 
 		// This event is relied upon by the DevDiv Analytics and Growth Team
@@ -226,17 +234,22 @@ export class AzureResourceTreeDataProvider extends AzureResourceTreeDataProvider
 			"updateSubscriptionsAndTenants",
 			async (context: IActionContext) => {
 				context.telemetry.properties.isActivationEvent = "true";
+
 				context.errorHandling.suppressDisplay = true;
 
 				const subscriptionProvider =
 					await this.getAzureSubscriptionProvider();
+
 				const subscriptions =
 					await subscriptionProvider.getSubscriptions(false);
 
 				const tenantSet = new Set<string>();
+
 				const subscriptionSet = new Set<string>();
+
 				subscriptions.forEach((sub) => {
 					tenantSet.add(sub.tenantId);
+
 					subscriptionSet.add(sub.subscriptionId);
 				});
 
@@ -244,8 +257,10 @@ export class AzureResourceTreeDataProvider extends AzureResourceTreeDataProvider
 				// they will be put into Properties instead.
 				context.telemetry.properties.numtenants =
 					tenantSet.size.toString();
+
 				context.telemetry.properties.numsubscriptions =
 					subscriptionSet.size.toString();
+
 				context.telemetry.properties.subscriptions = JSON.stringify(
 					Array.from(subscriptionSet),
 				);

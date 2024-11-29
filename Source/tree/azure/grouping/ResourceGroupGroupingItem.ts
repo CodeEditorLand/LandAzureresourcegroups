@@ -28,9 +28,13 @@ import { GroupingItemFactoryOptions } from "./GroupingItemFactory";
 
 export class ResourceGroupGroupingItem extends GroupingItem {
 	readonly id: string;
+
 	readonly viewProperties: ViewPropertiesModel;
+
 	readonly tagsModel: ITagsModel;
+
 	readonly portalUrl: vscode.Uri;
+
 	readonly subscription: ISubscriptionContext & AzureSubscription;
 
 	constructor(
@@ -41,20 +45,25 @@ export class ResourceGroupGroupingItem extends GroupingItem {
 		super(options, factoryOptions);
 
 		this.id = resourceGroup.id;
+
 		this.portalUrl = createPortalUrl(
 			resourceGroup.subscription,
 			resourceGroup.id,
 		);
+
 		this.viewProperties = {
 			label: resourceGroup.name,
 			data: resourceGroup.raw,
 		};
+
 		this.subscription = {
 			// for v1.5 compatibility
 			...this.resourceGroup.subscription,
 			...createSubscriptionContext(resourceGroup.subscription),
 		};
+
 		this.tagsModel = new ResourceTags(resourceGroup);
+
 		this.contextValues.push(
 			"hasPortalUrl",
 			"azureResourceGroup",

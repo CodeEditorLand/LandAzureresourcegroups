@@ -33,22 +33,29 @@ import { GroupingItemFactoryOptions } from "./GroupingItemFactory";
 
 export class GroupingItem implements ResourceGroupsItem {
 	readonly id: string;
+
 	public readonly label: string;
+
 	public readonly resources: AzureResource[];
 
 	public readonly context?: ResourceGroupsTreeContext;
+
 	public readonly parent?: ResourceGroupsItem;
 
 	private readonly resourceItemFactory: ResourceItemFactory<AzureResource>;
+
 	private readonly branchDataProviderFactory: (
 		azureResource: AzureResource,
 	) => AzureResourceBranchDataProvider<AzureResourceModel>;
+
 	private readonly onDidChangeBranchDataProviders: vscode.Event<AzExtResourceType>;
 
 	protected readonly contextValues: string[] = ["groupingItem"];
 
 	private description?: string;
+
 	private readonly iconPath?: TreeItemIconPath;
+
 	private readonly options?: GroupingItemDisplayOptions;
 
 	constructor(
@@ -56,16 +63,23 @@ export class GroupingItem implements ResourceGroupsItem {
 		factoryOptions: GroupingItemFactoryOptions,
 	) {
 		this.resourceItemFactory = factoryOptions.resourceItemFactory;
+
 		this.branchDataProviderFactory =
 			factoryOptions.branchDataProviderFactory;
+
 		this.onDidChangeBranchDataProviders =
 			factoryOptions.onDidChangeBranchDataProviders;
 
 		this.context = options.context;
+
 		this.iconPath = options.iconPath;
+
 		this.label = options.label;
+
 		this.resources = options.resources;
+
 		this.parent = options.parent;
+
 		this.options = options.displayOptions;
 
 		this.subscription = this.context
@@ -112,6 +126,7 @@ export class GroupingItem implements ResourceGroupsItem {
 
 		sortedResources.forEach((resource) => {
 			const sub = resource.subscription;
+
 			subscriptionGroupingMap.set(
 				sub,
 				[...(subscriptionGroupingMap.get(sub) ?? [])].concat(resource),
@@ -125,6 +140,7 @@ export class GroupingItem implements ResourceGroupsItem {
 
 			if (azExtResourceTypes.includes(type)) {
 				ext.actions.refreshAzureTree(this);
+
 				ext.actions.refreshFocusTree(this);
 			}
 		});
@@ -191,6 +207,7 @@ export class GroupingItem implements ResourceGroupsItem {
 									);
 								} catch (e) {
 									const parsedError = parseError(e);
+
 									ext.outputChannel.appendLog(
 										localize(
 											"errorResolving",
@@ -199,6 +216,7 @@ export class GroupingItem implements ResourceGroupsItem {
 											parsedError.message,
 										),
 									);
+
 									items.push(
 										new InvalidAzureResourceItem(
 											resource,
@@ -232,9 +250,13 @@ export class GroupingItem implements ResourceGroupsItem {
 				? vscode.TreeItemCollapsibleState.Expanded
 				: vscode.TreeItemCollapsibleState.Collapsed,
 		);
+
 		treeItem.contextValue = createContextValue(this.contextValues);
+
 		treeItem.description = this.description;
+
 		treeItem.iconPath = this.iconPath;
+
 		treeItem.id = this.id;
 
 		return treeItem;
@@ -247,16 +269,23 @@ export class GroupingItem implements ResourceGroupsItem {
 
 export interface GroupingItemDisplayOptions {
 	expandByDefault?: boolean;
+
 	hideSeparators?: boolean;
 }
 
 export interface GroupingItemOptions {
 	label: string;
+
 	resources: AzureResource[];
+
 	context?: ResourceGroupsTreeContext;
+
 	contextValues?: string[];
+
 	iconPath?: TreeItemIconPath;
+
 	parent?: ResourceGroupsItem;
+
 	displayOptions?: GroupingItemDisplayOptions;
 }
 

@@ -29,6 +29,7 @@ class ResourceProviderManager<
 	private readonly onDidChangeResourceEventEmitter = new vscode.EventEmitter<
 		TResource | undefined
 	>();
+
 	private readonly providers = new Map<
 		TResourceProvider,
 		{ listener: vscode.Disposable | undefined }

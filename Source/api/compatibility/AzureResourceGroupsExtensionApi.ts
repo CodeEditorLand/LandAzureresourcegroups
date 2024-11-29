@@ -55,16 +55,25 @@ export class InternalAzureResourceGroupsExtensionApi
 		>,
 	) {
 		this.#appResourceTree = options.appResourceTree;
+
 		this.#appResourceTreeView = options.appResourceTreeView;
+
 		this.#workspaceResourceTree = options.workspaceResourceTree;
+
 		this.#workspaceResourceTreeView = options.workspaceResourceTreeView;
+
 		this.#apiVersion = options.apiVersion;
+
 		this.#registerApplicationResourceResolver =
 			options.registerApplicationResourceResolver;
+
 		this.#registerWorkspaceResourceProvider =
 			options.registerWorkspaceResourceProvider;
+
 		this.#registerActivity = options.registerActivity;
+
 		this.#pickAppResource = options.pickAppResource;
+
 		this.#getSubscriptions = options.getSubscriptions;
 	}
 

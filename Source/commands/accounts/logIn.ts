@@ -12,11 +12,14 @@ let _isLoggingIn: boolean = false;
 export async function logIn(_context: IActionContext): Promise<void> {
 	try {
 		const provider = await ext.subscriptionProviderFactory();
+
 		_isLoggingIn = true;
+
 		ext.actions.refreshAzureTree(); // Refresh to cause the "logging in" spinner to show
 		await provider.signIn();
 	} finally {
 		_isLoggingIn = false;
+
 		ext.actions.refreshAzureTree(); // Refresh now that sign in is complete
 	}
 }

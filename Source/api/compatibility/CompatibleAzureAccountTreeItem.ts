@@ -48,6 +48,7 @@ class CompatibilitySubscriptionPromptStep extends AzureWizardPromptStep<ISubscri
 			context,
 			ext.v2.api.resources.azureResourceTreeDataProvider,
 		);
+
 		Object.assign(context, subscription);
 	}
 

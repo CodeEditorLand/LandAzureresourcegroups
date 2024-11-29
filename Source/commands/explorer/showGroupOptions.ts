@@ -7,6 +7,7 @@ import { commands } from "vscode";
 
 export async function showGroupOptions(): Promise<void> {
 	await commands.executeCommand("workbench.view.extension.azure");
+
 	await commands.executeCommand(
 		"workbench.action.quickOpen",
 		">Azure: Group by",

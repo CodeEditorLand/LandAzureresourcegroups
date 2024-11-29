@@ -16,6 +16,7 @@ import { ResourceGroupsItem } from "./ResourceGroupsItem";
 
 export class InvalidItem implements ResourceGroupsItem {
 	constructor(public readonly error: IParsedError) {}
+
 	id = uuidv4();
 
 	getTreeItem(): TreeItem {

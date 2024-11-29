@@ -18,6 +18,7 @@ export interface AzureResourcesService {
 		context: IActionContext,
 		subscription: AzureSubscription,
 	): Promise<GenericResource[]>;
+
 	listResourceGroups(
 		context: IActionContext,
 		subscription: AzureSubscription,
@@ -34,6 +35,7 @@ export const defaultAzureResourcesServiceFactory =
 
 			return await createResourceClient([context, subContext]);
 		}
+
 		return {
 			async listResources(
 				context: IActionContext,

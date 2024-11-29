@@ -11,6 +11,7 @@ import { localize } from "../../utils/localize";
 
 export function getTagDiagnostics(text: string): Diagnostic[] {
 	const visitor: TagVisitor = new TagVisitor();
+
 	jsonc.visit(text, visitor);
 
 	return visitor.diagnostics;
@@ -26,9 +27,13 @@ export function getTagDiagnostics(text: string): Diagnostic[] {
  */
 class TagVisitor implements jsonc.JSONVisitor {
 	public diagnostics: Diagnostic[] = [];
+
 	private readonly _objectOpenBracketPositions: Position[] = [];
+
 	private readonly _arrayOpenBracketPositions: Position[] = [];
+
 	private _tagCount: number = 0;
+
 	private readonly _existingTags: string[] = [];
 
 	/**
@@ -64,6 +69,7 @@ class TagVisitor implements jsonc.JSONVisitor {
 				openBracketPosition,
 				new Position(closeBracketLine, closeBracketChar + 1),
 			);
+
 			this.addTagValueTypeError(range, "object");
 		}
 	};
@@ -150,6 +156,7 @@ class TagVisitor implements jsonc.JSONVisitor {
 					"tagNameEmpty",
 					"Tag name cannot be empty.",
 				);
+
 				this.addError(range, error);
 			}
 
@@ -165,6 +172,7 @@ class TagVisitor implements jsonc.JSONVisitor {
 					"Tag name cannot contain the following characters: {0}",
 					invalidChars.join(", "),
 				);
+
 				this.addError(range, error);
 			}
 
@@ -173,6 +181,7 @@ class TagVisitor implements jsonc.JSONVisitor {
 					"tagNameAlreadyUsed",
 					"Tag name is already used. Tag names are case-insensitive.",
 				);
+
 				this.addError(range, error);
 			} else {
 				this._existingTags.push(property.toLowerCase());
@@ -256,7 +265,9 @@ class TagVisitor implements jsonc.JSONVisitor {
 
 	private addError(range: Range, error: string): void {
 		const diagnostic: Diagnostic = new Diagnostic(range, error);
+
 		diagnostic.source = "Azure";
+
 		this.diagnostics.push(diagnostic);
 	}
 }

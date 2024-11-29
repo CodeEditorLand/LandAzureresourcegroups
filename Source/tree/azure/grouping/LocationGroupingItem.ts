@@ -14,6 +14,7 @@ export class LocationGroupingItem extends GroupingItem {
 		factoryOptions: GroupingItemFactoryOptions,
 	) {
 		super(options, factoryOptions);
+
 		this.contextValues.push("locationGroup", canFocusContextValue);
 	}
 }

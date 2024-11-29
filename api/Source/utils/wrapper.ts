@@ -54,6 +54,7 @@ export function unwrapArgs<T>(
 	) {
 		// If the first arg is an array of wrappers, unwrap them
 		const wrappedNodes = maybeNodeWrapperArray as Wrapper[];
+
 		nodes = [];
 
 		for (const n of wrappedNodes) {

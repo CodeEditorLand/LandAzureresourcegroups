@@ -25,18 +25,23 @@ function delay<T = void>(
 
 export interface AccessTokens {
 	resource: string;
+
 	graph: string;
+
 	keyVault?: string;
 }
 
 export interface ConsoleUris {
 	consoleUri: string;
+
 	terminalUri: string;
+
 	socketUri: string;
 }
 
 export interface Size {
 	cols: number;
+
 	rows: number;
 }
 
@@ -56,6 +61,7 @@ function getWindowSize(): Size {
 let resizeToken = {};
 async function resize(accessToken: string, terminalUri: string) {
 	const token = (resizeToken = {});
+
 	await delay(300);
 
 	for (let i = 0; i < 10; i++) {
@@ -103,8 +109,10 @@ async function resize(accessToken: string, terminalUri: string) {
 						response.body,
 					);
 				}
+
 				break;
 			}
+
 			await delay(1000 * (i + 1));
 
 			continue;
@@ -130,8 +138,11 @@ async function sendData(
 		};
 
 		const req = http.request(opts, (res) => resolve(res));
+
 		req.on("error", (err: Error) => reject(err));
+
 		req.write(data);
+
 		req.end();
 	});
 }
@@ -158,7 +169,9 @@ function connectSocket(ipcHandle: string, url: string) {
 		process.stdin.on("data", function (data) {
 			ws.send(data);
 		});
+
 		startKeepAlive();
+
 		sendData(
 			ipcHandle,
 			JSON.stringify([{ type: "status", status: "Connected" }]),
@@ -173,13 +186,16 @@ function connectSocket(ipcHandle: string, url: string) {
 	});
 
 	let error = false;
+
 	ws.on("error", function (event) {
 		error = true;
+
 		console.error("Socket error: " + JSON.stringify(event));
 	});
 
 	ws.on("close", function () {
 		console.log("Socket closed");
+
 		sendData(
 			ipcHandle,
 			JSON.stringify([{ type: "status", status: "Disconnected" }]),
@@ -194,6 +210,7 @@ function connectSocket(ipcHandle: string, url: string) {
 
 	function startKeepAlive() {
 		let isAlive = true;
+
 		ws.on("pong", () => {
 			isAlive = true;
 		});
@@ -201,20 +218,26 @@ function connectSocket(ipcHandle: string, url: string) {
 		const timer = setInterval(() => {
 			if (isAlive === false) {
 				error = true;
+
 				console.log("Socket timeout");
+
 				ws.terminate();
+
 				clearInterval(timer);
 			} else {
 				isAlive = false;
+
 				ws.ping();
 			}
 		}, 60000);
+
 		timer.unref();
 	}
 }
 
 export function main() {
 	process.stdin.setRawMode(true);
+
 	process.stdin.resume();
 
 	// process.env.CLOUD_CONSOLE_IPC is defined when the extension host creates the terminal
@@ -243,7 +266,9 @@ export function main() {
 						const accessToken: string = message.accessToken;
 
 						const consoleUris: ConsoleUris = message.consoleUris;
+
 						connectSocket(ipcHandle, consoleUris.socketUri);
+
 						process.stdout.on("resize", () => {
 							resize(accessToken, consoleUris.terminalUri).catch(
 								console.error,
@@ -251,6 +276,7 @@ export function main() {
 						});
 					} catch (err) {
 						console.error(err);
+
 						sendData(
 							ipcHandle,
 							JSON.stringify([

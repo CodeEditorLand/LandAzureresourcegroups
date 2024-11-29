@@ -43,7 +43,9 @@ export function registerApplicationResourceResolver(
 
 			return new Disposable(() => {
 				delete applicationResourceResolvers[type];
+
 				disposable.dispose();
+
 				compat.dispose();
 			});
 		},

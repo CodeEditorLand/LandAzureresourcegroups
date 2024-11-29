@@ -16,12 +16,14 @@ import { ResourceGroupsItem } from "../ResourceGroupsItem";
 
 export class DefaultAzureResourceItem implements ResourceGroupsItem {
 	private readonly resourceTypeExtension: AzExtWrapper | undefined;
+
 	public readonly portalUrl: vscode.Uri;
 
 	constructor(private readonly resource: AzureResource) {
 		this.resourceTypeExtension = getAzureExtensions().find((ext) =>
 			ext.matchesApplicationResourceType(resource),
 		);
+
 		this.portalUrl = createPortalUrl(resource.subscription, resource.id);
 	}
 
@@ -63,6 +65,7 @@ export class DefaultAzureResourceItem implements ResourceGroupsItem {
 		);
 
 		treeItem.iconPath = getIconPath(this.resource.resourceType);
+
 		treeItem.contextValue = createContextValue([
 			"azureResource",
 			"hasPortalUrl",

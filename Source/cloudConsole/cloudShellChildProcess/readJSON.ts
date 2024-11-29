@@ -11,9 +11,13 @@ import * as http from "http";
 export async function readJSON<T>(req: http.IncomingMessage): Promise<any> {
 	return new Promise<T>((resolve, reject) => {
 		const chunks: string[] = [];
+
 		req.setEncoding("utf8");
+
 		req.on("data", (d: string) => chunks.push(d));
+
 		req.on("error", (err: Error) => reject(err));
+
 		req.on("end", () => {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			const data = JSON.parse(chunks.join(""));

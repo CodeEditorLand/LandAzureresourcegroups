@@ -42,6 +42,7 @@ export async function focusGroup(
 			kind: "resourceType",
 			type: item.resourceType as AzExtResourceType,
 		};
+
 		context.telemetry.properties.resourceType = item.resourceType;
 	} else if (isLocationGroupingItem(item)) {
 		ext.focusedGroup = {
@@ -59,6 +60,8 @@ export async function focusGroup(
 		hasFocusedGroupContextKey,
 		true,
 	);
+
 	ext.actions.refreshFocusTree();
+
 	await ext.focusView.reveal(undefined);
 }

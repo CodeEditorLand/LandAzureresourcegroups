@@ -19,6 +19,7 @@ export function createWrappedAzureResourcesExtensionApi(
 		callbackIdPrefix: "api.",
 		beforeHook: (context: IActionContext) => {
 			context.telemetry.properties.callingExtensionId = extensionId;
+
 			context.telemetry.properties.apiVersion = api.apiVersion;
 		},
 	};

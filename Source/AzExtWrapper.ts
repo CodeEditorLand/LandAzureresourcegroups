@@ -22,6 +22,7 @@ export function getAzureExtensions(): AzExtWrapper[] {
 	if (!wrappers) {
 		wrappers = azureExtensions.map((d) => new AzExtWrapper(d));
 	}
+
 	return wrappers;
 }
 
@@ -43,12 +44,16 @@ export class AzExtWrapper {
 	public readonly id: string;
 
 	private readonly _resourceTypes: AzExtResourceType[];
+
 	private readonly _data: IAzExtMetadata;
+
 	private _verifiedReportIssueCommandId?: string;
 
 	constructor(data: IAzExtMetadata) {
 		this._data = data;
+
 		this.id = `${data.publisher || "ms-azuretools"}.${data.name}`;
+
 		this._resourceTypes = data.resourceTypes;
 	}
 
@@ -95,6 +100,7 @@ export class AzExtWrapper {
 					this._data.reportIssueCommandId;
 			}
 		}
+
 		return this._verifiedReportIssueCommandId;
 	}
 

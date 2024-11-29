@@ -17,7 +17,9 @@ import { getResourceContributions } from "../utils/getResourceContributions";
 
 interface ContributedCreateResourceCommand extends Command {
 	detail?: string;
+
 	type?: AzExtResourceType;
+
 	extensionId: string;
 }
 
@@ -36,6 +38,7 @@ export async function createResource(
 		// Manually activate extension before executing command to prevent VS Code from serializing arguments.
 		// See https://github.com/microsoft/vscode-azureresourcegroups/issues/559 for details.
 		await extensions.getExtension(pick.data.extensionId)?.activate();
+
 		await commands.executeCommand(pick.data.command, node);
 	}
 }
@@ -67,6 +70,7 @@ function getContributedCreateResourceCommands(): ContributedCreateResourceComman
 		}));
 
 	const createCommands: ContributedCreateResourceCommand[] = [];
+
 	extensions.all.forEach((extension) =>
 		createCommands.push(...(getCommandsForExtension(extension) ?? [])),
 	);

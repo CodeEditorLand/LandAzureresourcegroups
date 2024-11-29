@@ -15,7 +15,9 @@ export interface InternalTreeView extends TreeView<ResourceGroupsItem> {
 
 interface InternalTreeViewOptions extends TreeViewOptions<ResourceGroupsItem> {
 	treeDataProvider: TreeDataProvider<ResourceGroupsItem>;
+
 	findItemById: (id: string) => Promise<ResourceGroupsItem | undefined>;
+
 	itemCache: BranchDataItemCache;
 	/**
 	 * See {@link TreeView.description}
@@ -37,7 +39,9 @@ export function createTreeView(
 	options: InternalTreeViewOptions,
 ): TreeView<ResourceGroupsItem> {
 	const treeView = window.createTreeView(viewId, options);
+
 	treeView.title = options.title;
+
 	treeView.description = options.description;
 
 	modifyReveal(treeView, options.findItemById, options.itemCache);

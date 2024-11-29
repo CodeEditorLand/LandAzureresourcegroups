@@ -10,10 +10,15 @@ import { ResourceGroupsItem } from "./ResourceGroupsItem";
 
 export interface GenericItemOptions {
 	readonly children?: ResourceGroupsItem[];
+
 	readonly commandArgs?: unknown[];
+
 	readonly commandId?: string;
+
 	readonly contextValue?: string;
+
 	readonly iconPath?: TreeItemIconPath;
+
 	readonly description?: string;
 }
 
@@ -46,7 +51,9 @@ export class GenericItem implements ResourceGroupsItem {
 		}
 
 		treeItem.description = this.options?.description;
+
 		treeItem.contextValue = this.options?.contextValue;
+
 		treeItem.iconPath = this.options?.iconPath;
 
 		return treeItem;

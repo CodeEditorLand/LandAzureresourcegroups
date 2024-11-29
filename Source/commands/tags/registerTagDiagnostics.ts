@@ -25,6 +25,7 @@ import { TagFileSystem } from "./TagFileSystem";
 export function registerTagDiagnostics(): void {
 	ext.diagnosticCollection =
 		languages.createDiagnosticCollection("Azure Tags");
+
 	ext.context.subscriptions.push(ext.diagnosticCollection);
 
 	registerEvent(
@@ -39,6 +40,7 @@ function onDidChangeActiveTextEditor(
 	editor: TextEditor | undefined,
 ): void {
 	context.telemetry.suppressIfSuccessful = true;
+
 	context.errorHandling.suppressDisplay = true;
 
 	if (editor?.document.uri.scheme === TagFileSystem.scheme) {
@@ -47,10 +49,13 @@ function onDidChangeActiveTextEditor(
 				onDidChangeTextDocument,
 			);
 		}
+
 		updateTagDiagnostics(editor.document);
 	} else if (ext.diagnosticWatcher) {
 		ext.diagnosticWatcher.dispose();
+
 		ext.diagnosticWatcher = undefined;
+
 		ext.diagnosticCollection.clear();
 	}
 }
@@ -62,6 +67,7 @@ async function onDidChangeTextDocument(
 		"onDidChangeTextDocument",
 		(context) => {
 			context.telemetry.suppressIfSuccessful = true;
+
 			context.errorHandling.suppressDisplay = true;
 
 			if (
@@ -76,5 +82,6 @@ async function onDidChangeTextDocument(
 
 function updateTagDiagnostics(document: TextDocument): void {
 	const diagnostics: Diagnostic[] = getTagDiagnostics(document.getText());
+
 	ext.diagnosticCollection.set(document.uri, diagnostics);
 }

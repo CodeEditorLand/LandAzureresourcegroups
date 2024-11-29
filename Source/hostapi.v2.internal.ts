@@ -34,5 +34,6 @@ export interface AzureResourcesHostApiInternal extends ResourcesApi {
 
 export interface AzureResourcesApiInternal extends AzureResourcesExtensionApi {
 	resources: AzureResourcesHostApiInternal;
+
 	activity: ActivityApi;
 }

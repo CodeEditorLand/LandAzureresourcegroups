@@ -33,6 +33,7 @@ export function registerWorkspaceResourceProvider(
 				new CompatibleWorkspaceResourceBranchDataProvider(
 					"azureWorkspace.loadMore",
 				);
+
 			disposables.push(
 				ext.v2.api.resources.registerWorkspaceResourceProvider(
 					new CompatibilityWorkspaceResourceProvider(
@@ -42,6 +43,7 @@ export function registerWorkspaceResourceProvider(
 					),
 				),
 			);
+
 			disposables.push(
 				ext.v2.api.resources.registerWorkspaceResourceBranchDataProvider(
 					resourceType,
@@ -53,7 +55,9 @@ export function registerWorkspaceResourceProvider(
 				for (const disposable of disposables) {
 					disposable.dispose();
 				}
+
 				delete workspaceResourceProviders[resourceType];
+
 				ext.actions.refreshWorkspaceTree();
 			});
 		},

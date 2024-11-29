@@ -25,7 +25,9 @@ export type BranchDataItemOptions = {
 	defaultId?: string;
 
 	defaults?: vscode.TreeItem;
+
 	portalUrl?: vscode.Uri;
+
 	viewProperties?: ViewPropertiesModel;
 };
 
@@ -37,6 +39,7 @@ function appendContextValues(
 	const set = new Set<string>(originalValues?.split(";") ?? []);
 
 	optionsValues?.forEach((value) => set.add(value));
+
 	extraValues?.forEach((value) => set.add(value));
 
 	return Array.from(set).join(";");
@@ -44,6 +47,7 @@ function appendContextValues(
 
 export class BranchDataItemWrapper implements ResourceGroupsItem, Wrapper {
 	static readonly hasPropertiesContextValue = "hasProperties";
+
 	static readonly hasPortalUrlContextValue = "hasPortalUrl";
 
 	constructor(
@@ -77,6 +81,7 @@ export class BranchDataItemWrapper implements ResourceGroupsItem, Wrapper {
 	public readonly id: string;
 
 	readonly portalUrl: vscode.Uri | undefined = this.options?.portalUrl;
+
 	readonly viewProperties?: ViewPropertiesModel =
 		this.options?.viewProperties;
 
@@ -141,9 +146,11 @@ export class BranchDataItemWrapper implements ResourceGroupsItem, Wrapper {
 		if (this.portalUrl) {
 			extraValues.push(BranchDataItemWrapper.hasPortalUrlContextValue);
 		}
+
 		if (this.viewProperties) {
 			extraValues.push(BranchDataItemWrapper.hasPropertiesContextValue);
 		}
+
 		return extraValues;
 	}
 }

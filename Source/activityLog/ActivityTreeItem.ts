@@ -77,6 +77,7 @@ export class ActivityTreeItem
 				);
 			}
 		}
+
 		return new ThemeIcon("loading~spin");
 	}
 
@@ -88,13 +89,18 @@ export class ActivityTreeItem
 		TreeItemCollapsibleState.None;
 
 	public status?: ActivityStatus;
+
 	public error?: unknown;
+
 	private latestProgress?: { message?: string };
 
 	public constructor(parent: AzExtParentTreeItem, activity: Activity) {
 		super(parent);
+
 		this.id = activity.id;
+
 		this.setupListeners(activity);
+
 		this.startedAtMs = Date.now();
 	}
 
@@ -113,6 +119,7 @@ export class ActivityTreeItem
 		if (this.state.getChildren) {
 			return await this.state.getChildren(this);
 		}
+
 		return [];
 	}
 
@@ -125,10 +132,13 @@ export class ActivityTreeItem
 			"activityOnProgress",
 			async (context) => {
 				context.telemetry.suppressIfSuccessful = true;
+
 				this.latestProgress = data.message
 					? { message: data?.message }
 					: this.latestProgress;
+
 				this.state = data;
+
 				await this.refresh(context);
 			},
 		);
@@ -139,8 +149,11 @@ export class ActivityTreeItem
 			"activityOnStart",
 			async (context) => {
 				this.startedAtMs = Date.now();
+
 				this.status = ActivityStatus.Running;
+
 				this.state = data;
+
 				await this.refresh(context);
 			},
 		);
@@ -151,12 +164,14 @@ export class ActivityTreeItem
 			"activityOnSuccess",
 			async (context) => {
 				this.state = data;
+
 				this.status = ActivityStatus.Done;
 
 				if (this.state.getChildren) {
 					this.initialCollapsibleState =
 						TreeItemCollapsibleState.Expanded;
 				}
+
 				await this.refresh(context);
 			},
 		);
@@ -167,10 +182,14 @@ export class ActivityTreeItem
 			"activityOnError",
 			async (context) => {
 				this.state = data;
+
 				this.status = ActivityStatus.Done;
+
 				this.error = data.error;
+
 				this.initialCollapsibleState =
 					TreeItemCollapsibleState.Expanded;
+
 				await this.refresh(context);
 			},
 		);
@@ -178,8 +197,11 @@ export class ActivityTreeItem
 
 	private setupListeners(activity: Activity): void {
 		this.disposables.push(activity.onProgress(this.onProgress.bind(this)));
+
 		this.disposables.push(activity.onStart(this.onStart.bind(this)));
+
 		this.disposables.push(activity.onSuccess(this.onSuccess.bind(this)));
+
 		this.disposables.push(activity.onError(this.onError.bind(this)));
 	}
 }

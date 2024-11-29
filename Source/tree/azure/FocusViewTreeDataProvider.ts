@@ -88,6 +88,7 @@ export class FocusViewTreeDataProvider extends AzureResourceTreeDataProviderBase
 						)),
 					);
 				}
+
 				if (!showHiddenTypes) {
 					resources = resources.filter(
 						(resource) =>

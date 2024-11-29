@@ -25,7 +25,9 @@ import { CompatibleAzureAccountTreeItem } from "./CompatibleAzureAccountTreeItem
  */
 abstract class IntermediateCompatibleAzExtTreeDataProvider extends AzExtTreeDataProvider {
 	public abstract onDidChangeTreeData: Event<AzExtTreeItem | undefined>;
+
 	public abstract onTreeItemCreate: Event<AzExtTreeItem>;
+
 	public abstract onDidExpandOrRefreshExpandedTreeItem: Event<AzExtTreeItem>;
 }
 
@@ -80,6 +82,7 @@ export class CompatibleAzExtTreeDataProvider extends IntermediateCompatibleAzExt
 		context: ITreeItemPickerContext & { canPickMany: true },
 		startingTreeItem?: AzExtTreeItem,
 	): Promise<T[]>;
+
 	public override async showTreeItemPicker<T extends AzExtTreeItem>(
 		expectedContextValues: string | RegExp | (string | RegExp)[],
 		context: ITreeItemPickerContext,

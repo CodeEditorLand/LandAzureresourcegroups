@@ -18,7 +18,9 @@ import { WorkspaceResourceTreeDataProvider } from "./WorkspaceResourceTreeDataPr
 
 interface RegisterWorkspaceTreeOptions {
 	workspaceResourceBranchDataProviderManager: WorkspaceResourceBranchDataProviderManager;
+
 	workspaceResourceProviderManager: WorkspaceResourceProviderManager;
+
 	refreshEvent: vscode.Event<
 		void | ResourceGroupsItem | ResourceGroupsItem[] | null | undefined
 	>;
@@ -43,6 +45,7 @@ export function registerWorkspaceTree(
 			workspaceResourceProviderManager,
 			branchItemCache,
 		);
+
 	context.subscriptions.push(workspaceResourceTreeDataProvider);
 
 	const treeView = createTreeView("azureWorkspace", {
@@ -59,6 +62,7 @@ export function registerWorkspaceTree(
 			workspaceResourceTreeDataProvider,
 		) as typeof workspaceResourceTreeDataProvider.findItemById,
 	});
+
 	context.subscriptions.push(treeView);
 
 	ext.workspaceTreeView =

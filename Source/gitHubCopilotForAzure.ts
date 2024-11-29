@@ -63,10 +63,12 @@ export function gitHubCopilotForAzureToast({
 				title: localize("install", "Install"),
 				run: async () => {
 					context.telemetry.properties.toastChoice = "install";
+
 					await commands.executeCommand(
 						"extension.open",
 						ghcpfaExtensionId,
 					);
+
 					await commands.executeCommand(
 						"workbench.extensions.installExtension",
 						ghcpfaExtensionId,
@@ -78,6 +80,7 @@ export function gitHubCopilotForAzureToast({
 				title: localize("learnMore", "Learn More"),
 				run: async () => {
 					context.telemetry.properties.toastChoice = "learnMore";
+
 					await openUrl(ghcpfaLearnPage);
 				},
 			};
@@ -86,6 +89,7 @@ export function gitHubCopilotForAzureToast({
 				title: localize("dontShowAgain", "Don't Show Again"),
 				run: async () => {
 					context.telemetry.properties.toastChoice = "dontShowAgain";
+
 					await globalState.update(dontShowKey, true);
 				},
 			};
@@ -103,6 +107,7 @@ export function gitHubCopilotForAzureToast({
 				learnMore,
 				never,
 			);
+
 			await button?.run();
 		},
 	);

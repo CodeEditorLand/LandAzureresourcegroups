@@ -21,9 +21,12 @@ interface TreeItemState {
 export class TreeItemStateStore implements vscode.Disposable {
 	private readonly store: Record<string, Partial<TreeItemState> | undefined> =
 		{};
+
 	private readonly disposables: vscode.Disposable[] = [];
+
 	private readonly onDidUpdateStateEmitter =
 		new vscode.EventEmitter<string>();
+
 	private readonly onDidUpdateStateEvent: vscode.Event<string> =
 		this.onDidUpdateStateEmitter.event;
 
@@ -41,12 +44,14 @@ export class TreeItemStateStore implements vscode.Disposable {
 		const getTreeItem = item.getTreeItem.bind(
 			item,
 		) as typeof item.getTreeItem;
+
 		item.getTreeItem = async () => {
 			const treeItem = await getTreeItem();
 
 			if (treeItem.id) {
 				return this.applyToTreeItem({ ...treeItem, id: treeItem.id });
 			}
+
 			return treeItem;
 		};
 
@@ -67,6 +72,7 @@ export class TreeItemStateStore implements vscode.Disposable {
 		callback: () => Promise<T>,
 	): Promise<T> {
 		let result: T;
+
 		this.update(id, {
 			...this.getState(id),
 			temporaryDescription: description,
@@ -82,6 +88,7 @@ export class TreeItemStateStore implements vscode.Disposable {
 				spinner: false,
 			});
 		}
+
 		return result;
 	}
 
@@ -124,6 +131,7 @@ export class TreeItemStateStore implements vscode.Disposable {
 
 	private update(id: string, state: Partial<TreeItemState>): void {
 		this.store[id] = { ...this.getState(id), ...state };
+
 		this.onDidUpdateStateEmitter.fire(id);
 	}
 }

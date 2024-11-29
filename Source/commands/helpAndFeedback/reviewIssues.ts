@@ -27,6 +27,8 @@ export async function reviewIssues(context: IActionContext): Promise<void> {
 			suppressPersistence: true,
 		})
 	).data;
+
 	context.telemetry.properties.extension = azExtension.name;
+
 	await openUrl(`https://github.com/microsoft/${azExtension.name}/issues`);
 }

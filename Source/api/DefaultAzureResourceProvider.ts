@@ -64,11 +64,13 @@ export class DefaultAzureResourceProvider implements AzureResourceProvider {
 		const allResourcesDeduped: GenericResource[] = [
 			...new Map(allResources.map((item) => [item.id, item])).values(),
 		];
+
 		context.telemetry.measurements.resourceCount =
 			allResourcesDeduped.length;
 
 		if (allResourcesDeduped.length !== allResources.length) {
 			context.telemetry.properties.duplicateResources = "true";
+
 			context.telemetry.measurements.rawResourceCount =
 				allResources.length;
 		}
@@ -87,6 +89,7 @@ export class DefaultAzureResourceProvider implements AzureResourceProvider {
 				context,
 				subscription,
 			);
+
 		context.telemetry.measurements.resourceGroupCount =
 			allResourceGroups.length;
 

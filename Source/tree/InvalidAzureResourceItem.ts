@@ -34,12 +34,15 @@ export class InvalidAzureResourceItem implements ResourceGroupsItem {
 			this.resource.name,
 			vscode.TreeItemCollapsibleState.Collapsed,
 		);
+
 		treeItem.iconPath = getIconPath(this.resource.resourceType);
+
 		treeItem.contextValue = createContextValue([
 			"invalid",
 			"azureResource",
 			"hasPortalUrl",
 		]);
+
 		treeItem.description = localize("error", "Error");
 
 		return treeItem;

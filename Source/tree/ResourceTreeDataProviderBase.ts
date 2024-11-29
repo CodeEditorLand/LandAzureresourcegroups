@@ -21,8 +21,11 @@ export abstract class ResourceTreeDataProviderBase
 	implements vscode.TreeDataProvider<ResourceGroupsItem>
 {
 	private readonly branchTreeDataChangeSubscription: vscode.Disposable;
+
 	private readonly refreshSubscription: vscode.Disposable;
+
 	private readonly resourceProviderManagerListener: vscode.Disposable;
+
 	private readonly onDidChangeTreeDataEmitter = new vscode.EventEmitter<
 		void | ResourceGroupsItem | ResourceGroupsItem[] | null | undefined
 	>();
@@ -43,7 +46,9 @@ export abstract class ResourceTreeDataProviderBase
 			callOnDispose?.();
 
 			this.branchTreeDataChangeSubscription.dispose();
+
 			this.refreshSubscription.dispose();
+
 			this.resourceProviderManagerListener.dispose();
 		});
 
@@ -85,6 +90,7 @@ export abstract class ResourceTreeDataProviderBase
 					rgItems.push(rgItem);
 				}
 			}
+
 			this.onDidChangeTreeDataEmitter.fire(rgItems);
 		} else {
 			// e was null/undefined/void
@@ -123,10 +129,12 @@ export abstract class ResourceTreeDataProviderBase
 				if (child instanceof BranchDataItemWrapper) {
 					return child;
 				}
+
 				return this.state.wrapItemInStateHandling(child, (item) =>
 					this.onDidChangeTreeDataEmitter.fire(item),
 				);
 			}
+
 			return child;
 		});
 	}

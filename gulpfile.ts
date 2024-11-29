@@ -14,9 +14,11 @@ async function prepareForWebpack(): Promise<void> {
 	const mainJsPath: string = path.join(__dirname, "main.js");
 
 	let contents: string = (await fs.readFile(mainJsPath)).toString();
+
 	contents = contents
 		.replace("out/src/extension", "dist/extension.bundle")
 		.replace(", true /* ignoreBundle */", "");
+
 	await fs.writeFile(mainJsPath, contents);
 }
 
@@ -54,10 +56,12 @@ async function cleanReadme(): Promise<void> {
 	const readmePath: string = path.join(__dirname, "README.md");
 
 	let data: string = (await fs.readFile(readmePath)).toString();
+
 	data = data.replace(
 		/<!-- region exclude-from-marketplace -->.*?<!-- endregion exclude-from-marketplace -->/gis,
 		"",
 	);
+
 	await fs.writeFile(readmePath, data);
 }
 

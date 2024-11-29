@@ -23,10 +23,13 @@ import { GroupingItemFactory } from "./grouping/GroupingItemFactory";
 
 interface RegisterAzureTreeOptions {
 	azureResourceBranchDataProviderManager: AzureResourceBranchDataProviderManager;
+
 	azureResourceProviderManager: AzureResourceProviderManager;
+
 	refreshEvent: vscode.Event<
 		void | ResourceGroupsItem | ResourceGroupsItem[] | null | undefined
 	>;
+
 	itemCache: BranchDataItemCache;
 }
 
@@ -47,6 +50,7 @@ export function registerAzureTree(
 		azureResourceBranchDataProviderManager,
 		itemCache,
 	);
+
 	context.subscriptions.push(resourceGroupingManager);
 
 	const azureResourceTreeDataProvider = new AzureResourceTreeDataProvider(
@@ -57,6 +61,7 @@ export function registerAzureTree(
 		resourceGroupingManager,
 		resourceProviderManager,
 	);
+
 	context.subscriptions.push(azureResourceTreeDataProvider);
 
 	const treeView = createTreeView("azureResourceGroups", {
@@ -73,7 +78,9 @@ export function registerAzureTree(
 			azureResourceTreeDataProvider,
 		) as typeof azureResourceTreeDataProvider.findItemById,
 	});
+
 	context.subscriptions.push(treeView);
+
 	ext.appResourceTreeView =
 		treeView as unknown as vscode.TreeView<AzExtTreeItem>;
 

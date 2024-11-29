@@ -23,9 +23,11 @@ import { ResourceTypeGroupingItem } from "./ResourceTypeGroupingItem";
 
 export interface GroupingItemFactoryOptions {
 	resourceItemFactory: ResourceItemFactory<AzureResource>;
+
 	branchDataProviderFactory: (
 		azureResource: AzureResource,
 	) => AzureResourceBranchDataProvider<AzureResourceModel>;
+
 	onDidChangeBranchDataProviders: vscode.Event<AzExtResourceType>;
 
 	defaultDisplayOptions?: GroupingItemDisplayOptions;

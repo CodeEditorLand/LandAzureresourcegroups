@@ -11,7 +11,9 @@ import { ext } from "../../extensionVariables";
 
 export async function unfocusGroup(_context: IActionContext): Promise<void> {
 	ext.focusedGroup = undefined;
+
 	ext.actions.refreshFocusTree();
+
 	await vscode.commands.executeCommand(
 		"setContext",
 		hasFocusedGroupContextKey,

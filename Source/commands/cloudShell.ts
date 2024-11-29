@@ -25,7 +25,9 @@ function delay(ms: number) {
 
 interface MaintainCloudShellConnectionOptions {
 	consoleUri: string;
+
 	terminalId: string;
+
 	templateUrl?: string;
 }
 
@@ -78,14 +80,18 @@ export async function refreshDevTunnelAccessToken() {
 		ext.outputChannel.debug("Running tunnel user login...");
 
 		const codeCli = "vscode";
+
 		exec(
 			`${codeCli} tunnel user login --provider microsoft --access-token ${session.accessToken}`,
 			(error, stdout, stderr) => {
 				if (error) {
 					ext.outputChannel.error("Failed to run tunnel user login");
+
 					ext.outputChannel.error(stderr);
+
 					ext.outputChannel.error(stdout);
 				}
+
 				ext.outputChannel.debug("Successfully ran tunnel user login.");
 			},
 		);
@@ -106,6 +112,7 @@ async function cloudShellKeepAlive(consoleUri: string) {
 
 		return;
 	}
+
 	const response = await fetch(`${consoleUri}/keepAlive`, {
 		method: "POST",
 		headers: {
@@ -124,7 +131,9 @@ async function cloudShellKeepAlive(consoleUri: string) {
 		ext.outputChannel.error(
 			"Failed to call Cloud Shell keepAlive endpoint.",
 		);
+
 		ext.outputChannel.error(response.statusText);
+
 		ext.outputChannel.error(await response.text());
 	}
 }
@@ -166,7 +175,9 @@ async function cloudShellSize(
 		);
 	} else {
 		ext.outputChannel.error("Failed to call Cloud Shell size endpoint.");
+
 		ext.outputChannel.error(sizeResponse.statusText);
+
 		ext.outputChannel.error(await sizeResponse.text());
 	}
 }
@@ -179,6 +190,7 @@ async function recordTelemetry(options: { templateUrl?: string }) {
 				const repository = extractRepoFromGitHubUrl(
 					options.templateUrl,
 				);
+
 				context.telemetry.properties.repository = repository;
 			}
 		},

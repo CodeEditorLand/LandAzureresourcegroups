@@ -24,11 +24,14 @@ const unknownLabel = localize("unknown", "Unknown");
 
 interface GroupByParameters {
 	allResources: AzureResource[];
+
 	keySelector: (resource: AzureResource) => string;
+
 	groupingItemFactory: (
 		key: string,
 		resourcesForKey: AzureResource[],
 	) => GroupingItem;
+
 	initialGrouping?: { [key: string]: AzureResource[] } | undefined;
 }
 
@@ -55,6 +58,7 @@ function groupBy({
 	}, initialGrouping);
 
 	const groupingItems: GroupingItem[] = [];
+
 	Object.entries(map).forEach(([key, resources]) => {
 		try {
 			groupingItems.push(groupingItemFactory(key, resources));
@@ -72,6 +76,7 @@ function groupBy({
 export class AzureResourceGroupingManager extends vscode.Disposable {
 	private readonly onDidChangeGroupingEmitter =
 		new vscode.EventEmitter<void>();
+
 	private readonly configSubscription: vscode.Disposable;
 
 	constructor(private readonly groupingItemFactory: GroupingItemFactory) {

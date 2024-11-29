@@ -50,6 +50,7 @@ function setTelemetryPropertiesForId(
 	const parsedAzureResourceId = parsePartialAzureResourceId(resourceId);
 
 	const resourceKind = getResourceKindFromId(parsedAzureResourceId);
+
 	context.telemetry.properties.resourceKind = resourceKind;
 
 	if (resourceKind === "resource") {

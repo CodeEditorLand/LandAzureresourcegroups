@@ -17,6 +17,7 @@ const LogicAppKind = "workflowapp";
  */
 export function getAzExtResourceType(resource: {
 	type: string;
+
 	kind?: string;
 }): AzExtResourceType | undefined {
 	const type = resource.type.toLowerCase();

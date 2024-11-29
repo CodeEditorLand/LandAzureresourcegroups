@@ -91,7 +91,9 @@ export function createAzureResourcesHostApi(
 				"internalRevealAzureResource",
 				(context) => {
 					context.errorHandling.rethrow = true;
+
 					context.errorHandling.suppressDisplay = true;
+
 					context.errorHandling.suppressReportIssue = true;
 
 					return revealResource(context, id, options);

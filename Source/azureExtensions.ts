@@ -163,10 +163,15 @@ export const legacyTypeMap: Partial<Record<AzExtResourceType, string>> = {
 
 export interface IAzExtMetadata {
 	name: string;
+
 	label: string;
+
 	publisher?: string;
+
 	resourceTypes: AzExtResourceType[];
+
 	tutorial?: IAzExtTutorial;
+
 	reportIssueCommandId?: string;
 }
 
@@ -181,5 +186,6 @@ export interface IAzExtResourceType {
 
 export interface IAzExtTutorial {
 	label: string;
+
 	url: string;
 }

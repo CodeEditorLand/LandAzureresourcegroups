@@ -16,6 +16,7 @@ import { localize } from "../../utils/localize";
 export async function reportIssue(context: IActionContext): Promise<void> {
 	const picks: IAzureQuickPickItem<AzExtWrapper | undefined>[] =
 		getInstalledExtensionPicks();
+
 	picks.push({
 		label: localize("other", "Other"),
 		data: undefined,

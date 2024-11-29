@@ -13,5 +13,6 @@ export interface DeleteResourceGroupContext
 	extends IActionContext,
 		ExecuteActivityContext {
 	resourceGroupToDelete?: string;
+
 	subscription: ISubscriptionContext;
 }

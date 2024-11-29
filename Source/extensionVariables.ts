@@ -119,16 +119,19 @@ export namespace ext {
 
 export type ResourceTypeGrouping = {
 	kind: "resourceType";
+
 	type: AzExtResourceType;
 };
 
 export type ResourceGroupGrouping = {
 	kind: "resourceGroup";
+
 	id: string;
 };
 
 type LocationGrouping = {
 	kind: "location";
+
 	location: string;
 };
 

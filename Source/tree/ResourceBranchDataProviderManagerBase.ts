@@ -24,12 +24,15 @@ export abstract class ResourceBranchDataProviderManagerBase<
 		TResourceType,
 		{
 			provider: TBranchDataProvider;
+
 			listener: vscode.Disposable | undefined;
 		}
 	>();
+
 	private readonly onDidChangeTreeDataEmitter = new vscode.EventEmitter<
 		void | ResourceModelBase | ResourceModelBase[] | undefined | null
 	>();
+
 	private readonly onDidChangeBranchDataProvidersEmitter =
 		new vscode.EventEmitter<TResourceType>();
 
@@ -39,6 +42,7 @@ export abstract class ResourceBranchDataProviderManagerBase<
 	) {
 		super(() => {
 			this.onDidChangeTreeDataEmitter.dispose();
+
 			this.onDidChangeBranchDataProvidersEmitter.dispose();
 
 			for (const providerContext of this.branchDataProviderMap.values()) {
@@ -48,6 +52,7 @@ export abstract class ResourceBranchDataProviderManagerBase<
 	}
 
 	public readonly onDidChangeTreeData = this.onDidChangeTreeDataEmitter.event;
+
 	public readonly onChangeBranchDataProviders: vscode.Event<TResourceType> =
 		this.onDidChangeBranchDataProvidersEmitter.event;
 
@@ -86,6 +91,7 @@ export abstract class ResourceBranchDataProviderManagerBase<
 			providerContext.listener?.dispose();
 
 			this.branchDataProviderMap.delete(type);
+
 			this.onDidChangeBranchDataProvidersEmitter.fire(type);
 		}
 	}
@@ -117,6 +123,7 @@ function wrapBranchDataProvider<
 					if (!result) {
 						throw new NullishGetResourceItemResultError(result);
 					}
+
 					return result;
 				},
 				getParent: branchDataProvider.getParent?.bind(
@@ -148,6 +155,7 @@ class NullishGetResourceItemResultError extends Error {
 		super(
 			`Internal error: getResourceItem returned ${String(result)}. Expected a non-nullish value.`,
 		);
+
 		this.name = "NullishGetResourceItemResultError";
 	}
 }

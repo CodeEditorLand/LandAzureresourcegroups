@@ -20,6 +20,7 @@ function stringifyError(e: unknown): string {
 	if (error.stack) {
 		str = str.concat(`\n\t\tat ${error.stack.split("\n").join("\n\t\t")}`);
 	}
+
 	return str;
 }
 
@@ -102,8 +103,11 @@ export function wrapFunctionsInTelemetry<
 				(options?.callbackIdPrefix ?? "") + functionName,
 				async (context) => {
 					context.errorHandling.rethrow = true;
+
 					context.errorHandling.suppressDisplay = true;
+
 					context.errorHandling.suppressReportIssue = true;
+
 					options?.beforeHook?.(context);
 
 					try {
@@ -151,8 +155,11 @@ export function wrapFunctionsInTelemetrySync<
 				(options?.callbackIdPrefix ?? "") + functionName,
 				(context) => {
 					context.errorHandling.rethrow = true;
+
 					context.errorHandling.suppressDisplay = true;
+
 					context.errorHandling.suppressReportIssue = true;
+
 					options?.beforeHook?.(context);
 
 					try {

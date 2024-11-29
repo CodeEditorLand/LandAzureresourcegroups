@@ -22,10 +22,13 @@ import { GroupingItemFactory } from "./grouping/GroupingItemFactory";
 
 interface RegisterAzureTreeOptions {
 	azureResourceBranchDataProviderManager: AzureResourceBranchDataProviderManager;
+
 	azureResourceProviderManager: AzureResourceProviderManager;
+
 	refreshEvent: vscode.Event<
 		void | ResourceGroupsItem | ResourceGroupsItem[] | null | undefined
 	>;
+
 	itemCache: BranchDataItemCache;
 }
 
@@ -44,6 +47,7 @@ export function registerFocusTree(
 		azureResourceBranchDataProviderManager,
 		itemCache,
 	);
+
 	context.subscriptions.push(resourceGroupingManager);
 
 	const focusViewTreeDataProvider = new FocusViewTreeDataProvider(
@@ -70,7 +74,9 @@ export function registerFocusTree(
 			focusViewTreeDataProvider,
 		) as typeof focusViewTreeDataProvider.findItemById,
 	});
+
 	context.subscriptions.push(treeView);
+
 	ext.focusView = treeView as unknown as vscode.TreeView<AzExtTreeItem>;
 
 	return focusViewTreeDataProvider;

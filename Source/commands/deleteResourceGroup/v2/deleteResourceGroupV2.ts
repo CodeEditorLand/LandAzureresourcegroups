@@ -57,6 +57,7 @@ export async function deleteResourceGroupV2(
 
 	if (selectedResourceGroupNodes) {
 		subscription = selectedResourceGroupNodes[0].subscription;
+
 		resourceGroupsToDelete = selectedResourceGroupNodes.map(
 			(node) => node.resourceGroup,
 		);
@@ -167,6 +168,7 @@ async function deleteResourceGroups(
 				rg.name,
 				numOfResources,
 			);
+
 			await context.ui.showWarningMessage(
 				hasOneResource ? areYouSureDeleteOne : areYouSureDelete,
 				{ modal: true },
@@ -194,6 +196,7 @@ async function deleteResourceGroups(
 			): string | undefined {
 				return isNameEqual(val, rg.name) ? undefined : prompt;
 			}
+
 			const result: string = await context.ui.showInputBox({
 				prompt,
 				validateInput,
@@ -229,6 +232,7 @@ async function deleteResourceGroups(
 				);
 
 				await wizard.execute();
+
 				ext.azureTreeState.notifyChildrenChanged(
 					`/subscriptions/${rg.subscription.subscriptionId}`,
 				);

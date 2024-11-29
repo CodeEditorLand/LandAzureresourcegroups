@@ -15,6 +15,7 @@ import { localize } from "../utils/localize";
 
 export class HelpTreeItem extends AzExtParentTreeItem {
 	public label: string = localize("helpAndFeedback", "Help and Feedback");
+
 	public contextValue: string = "helpAndFeedback";
 
 	constructor() {

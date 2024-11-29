@@ -58,9 +58,11 @@ export function registerCommands(): void {
 	registerCommand("azureResourceGroups.refreshTree", () =>
 		ext.actions.refreshAzureTree(),
 	);
+
 	registerCommand("azureWorkspace.refreshTree", () =>
 		ext.actions.refreshWorkspaceTree(),
 	);
+
 	registerCommand("azureFocusView.refreshTree", () =>
 		ext.actions.refreshFocusTree(),
 	);
@@ -80,6 +82,7 @@ export function registerCommands(): void {
 			}
 		},
 	);
+
 	registerCommand(
 		"azureWorkspace.refresh",
 		async (context, node?: ResourceGroupsItem) => {
@@ -97,16 +100,19 @@ export function registerCommands(): void {
 	);
 
 	registerCommand("azureResourceGroups.focusGroup", focusGroup);
+
 	registerCommand("azureResourceGroups.unfocusGroup", unfocusGroup);
 
 	registerCommand("azureResourceGroups.logIn", (context: IActionContext) =>
 		logIn(context),
 	);
+
 	registerCommand(
 		"azureResourceGroups.selectSubscriptions",
 		(context: IActionContext, options: SelectSubscriptionOptions) =>
 			selectSubscriptions(context, options),
 	);
+
 	registerCommand("azureResourceGroups.signInToTenant", async () =>
 		signInToTenant(await ext.subscriptionProviderFactory()),
 	);
@@ -115,28 +121,38 @@ export function registerCommands(): void {
 		"azureResourceGroups.createResourceGroup",
 		createResourceGroup,
 	);
+
 	registerCommand(
 		"azureResourceGroups.deleteResourceGroupV2",
 		deleteResourceGroupV2,
 	);
+
 	registerCommand(
 		"azureResourceGroups.loadMore",
 		async (context: IActionContext, node: AzExtTreeItem) =>
 			await ext.appResourceTree.loadMore(node, context),
 	);
+
 	registerCommand("azureResourceGroups.openInPortal", openInPortal);
+
 	registerCommand("azureResourceGroups.revealResource", revealResource);
+
 	registerCommand("azureResourceGroups.viewProperties", viewProperties);
+
 	registerCommand("azureResourceGroups.editTags", editTags);
 
 	registerCommand("ms-azuretools.getStarted", getStarted);
+
 	registerCommand(
 		"ms-azuretools.loadMore",
 		async (context: IActionContext, node: AzExtTreeItem) =>
 			await ext.helpTree.loadMore(node, context),
 	);
+
 	registerCommand("ms-azuretools.reportIssue", reportIssue);
+
 	registerCommand("ms-azuretools.reviewIssues", reviewIssues);
+
 	registerCommand("ms-azuretools.openWalkthrough", () =>
 		commands.executeCommand(
 			"workbench.action.openWalkthrough",
@@ -146,21 +162,26 @@ export function registerCommands(): void {
 
 	// Suppress "Report an Issue" button for all errors in favor of the command
 	registerErrorHandler((c) => (c.errorHandling.suppressReportIssue = true));
+
 	registerReportIssueCommand("azureResourceGroups.reportIssue");
+
 	registerCommand("azureResourceGroups.createResource", createResource);
 
 	registerCommand(
 		"azureResourceGroups.groupBy.resourceGroup",
 		buildGroupByCommand("resourceGroup"),
 	);
+
 	registerCommand(
 		"azureResourceGroups.groupBy.resourceType",
 		buildGroupByCommand("resourceType"),
 	);
+
 	registerCommand(
 		"azureResourceGroups.groupBy.location",
 		buildGroupByCommand("location"),
 	);
+
 	registerCommand(
 		"azureResourceGroups.groupBy.armTag",
 		buildGroupByCommand("armTag"),
@@ -169,11 +190,14 @@ export function registerCommands(): void {
 	registerCommand("azureResourceGroups.installExtension", installExtension);
 
 	registerCommand("azureResourceGroups.clearActivities", clearActivities);
+
 	registerCommand("azureResourceGroups.showGroupOptions", showGroupOptions);
+
 	registerCommand(
 		"azureResourceGroups.openUrl",
 		async (context: IActionContext, url: string) => {
 			context.telemetry.properties.url = url;
+
 			await openUrl(url);
 		},
 	);

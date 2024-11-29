@@ -36,6 +36,7 @@ export async function createServer(
 	const ipcHandlePath = getIPCHandlePath(`${ipcHandlePrefix}-${nonce}`);
 
 	const server = new Server(ipcHandlePath, onRequest);
+
 	server.listen();
 
 	return server;
@@ -54,6 +55,7 @@ export class Server {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 				.catch((err) => console.error((err && err.message) || err));
 		});
+
 		this.server.on("error", (err) => console.error(err));
 	}
 
@@ -93,8 +95,10 @@ function getIPCHandlePath(id: string): string {
 
 export class Queue<T> {
 	private messages: T[] = [];
+
 	private dequeueRequest?: {
 		resolve: (value: T[]) => void;
+
 		reject: (err: unknown) => void;
 	};
 
@@ -103,7 +107,9 @@ export class Queue<T> {
 
 		if (this.dequeueRequest) {
 			this.dequeueRequest.resolve(this.messages);
+
 			this.dequeueRequest = undefined;
+
 			this.messages = [];
 		}
 	}
@@ -111,13 +117,16 @@ export class Queue<T> {
 	public async dequeue(timeout?: number): Promise<T[]> {
 		if (this.messages.length) {
 			const messages = this.messages;
+
 			this.messages = [];
 
 			return messages;
 		}
+
 		if (this.dequeueRequest) {
 			this.dequeueRequest.resolve([]);
 		}
+
 		return new Promise<T[]>((resolve, reject) => {
 			this.dequeueRequest = { resolve, reject };
 
