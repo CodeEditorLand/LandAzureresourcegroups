@@ -4,138 +4,82 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { AzureSubscriptionProvider } from "@microsoft/vscode-azext-azureauth";
-import {
-	AzExtTreeDataProvider,
-	IAzExtLogOutputChannel,
-	IExperimentationServiceAdapter,
-} from "@microsoft/vscode-azext-utils";
+import { AzExtTreeDataProvider, IAzExtLogOutputChannel, IExperimentationServiceAdapter } from "@microsoft/vscode-azext-utils";
 import { AzExtResourceType } from "api/src/AzExtResourceType";
-import {
-	DiagnosticCollection,
-	Disposable,
-	ExtensionContext,
-	TreeView,
-} from "vscode";
-
+import { DiagnosticCollection, Disposable, ExtensionContext, TreeView } from "vscode";
 import { ActivityLogTreeItem } from "./activityLog/ActivityLogsTreeItem";
 import { TagFileSystem } from "./commands/tags/TagFileSystem";
 import { AzureResourcesApiInternal } from "./hostapi.v2.internal";
 import { AzureResourcesServiceFactory } from "./services/AzureResourcesService";
-import { FocusViewTreeDataProvider } from "./tree/azure/FocusViewTreeDataProvider";
 import { ResourceGroupsItem } from "./tree/ResourceGroupsItem";
 import { TreeItemStateStore } from "./tree/TreeItemState";
+import { FocusViewTreeDataProvider } from "./tree/azure/FocusViewTreeDataProvider";
 
 export namespace extActions {
-	export let refreshWorkspaceTree: (
-		data?:
-			| ResourceGroupsItem
-			| ResourceGroupsItem[]
-			| null
-			| undefined
-			| void,
-	) => void;
-
-	export let refreshAzureTree: (
-		data?:
-			| ResourceGroupsItem
-			| ResourceGroupsItem[]
-			| null
-			| undefined
-			| void,
-	) => void;
-
-	export let refreshFocusTree: (
-		data?:
-			| ResourceGroupsItem
-			| ResourceGroupsItem[]
-			| null
-			| undefined
-			| void,
-	) => void;
+    export let refreshWorkspaceTree: (data?: ResourceGroupsItem | ResourceGroupsItem[] | null | undefined | void) => void;
+    export let refreshAzureTree: (data?: ResourceGroupsItem | ResourceGroupsItem[] | null | undefined | void) => void;
+    export let refreshFocusTree: (data?: ResourceGroupsItem | ResourceGroupsItem[] | null | undefined | void) => void;
+    export let refreshTenantTree: (data?: ResourceGroupsItem | ResourceGroupsItem[] | null | undefined | void) => void;
 }
 
 /**
  * Namespace for common variables used throughout the extension. They must be initialized in the activate() method of extension.ts
  */
 export namespace ext {
-	export let context: ExtensionContext;
-	// TODO: do we need this? only used by load more command
-	export let appResourceTree: AzExtTreeDataProvider;
+    export let context: ExtensionContext;
+    // TODO: do we need this? only used by load more command
+    export let appResourceTree: AzExtTreeDataProvider;
+    export let appResourceTreeView: TreeView<unknown>;
+    // TODO: do we need this? only used by load more command
+    export let workspaceTree: AzExtTreeDataProvider;
+    export let workspaceTreeView: TreeView<unknown>;
+    export let tenantTreeView: TreeView<unknown>
+    export let activityLogTree: AzExtTreeDataProvider;
+    export let activityLogTreeItem: ActivityLogTreeItem;
+    export let helpTree: AzExtTreeDataProvider;
+    export let outputChannel: IAzExtLogOutputChannel;
+    export let ignoreBundle: boolean | undefined;
+    export const prefix: string = 'azureResourceGroups';
 
-	export let appResourceTreeView: TreeView<unknown>;
-	// TODO: do we need this? only used by load more command
-	export let workspaceTree: AzExtTreeDataProvider;
+    export let tagFS: TagFileSystem;
+    export let diagnosticWatcher: Disposable | undefined;
+    export let diagnosticCollection: DiagnosticCollection;
 
-	export let workspaceTreeView: TreeView<unknown>;
+    export let azureTreeState: TreeItemStateStore;
 
-	export let activityLogTree: AzExtTreeDataProvider;
+    export let subscriptionProviderFactory: () => Promise<AzureSubscriptionProvider>;
 
-	export let activityLogTreeItem: ActivityLogTreeItem;
+    export namespace v2 {
+        export let api: AzureResourcesApiInternal;
+    }
 
-	export let helpTree: AzExtTreeDataProvider;
+    export namespace testing {
+        export let overrideAzureServiceFactory: AzureResourcesServiceFactory | undefined;
+        export let overrideAzureSubscriptionProvider: (() => AzureSubscriptionProvider) | undefined;
+    }
 
-	export let outputChannel: IAzExtLogOutputChannel;
+    export let focusedGroup: GroupingKind | undefined;
+    export let focusView: TreeView<unknown>;
+    export let focusViewTreeDataProvider: FocusViewTreeDataProvider;
 
-	export let ignoreBundle: boolean | undefined;
+    export const actions = extActions;
 
-	export const prefix: string = "azureResourceGroups";
-
-	export let tagFS: TagFileSystem;
-
-	export let diagnosticWatcher: Disposable | undefined;
-
-	export let diagnosticCollection: DiagnosticCollection;
-
-	export let azureTreeState: TreeItemStateStore;
-
-	export let subscriptionProviderFactory: () => Promise<AzureSubscriptionProvider>;
-
-	export namespace v2 {
-		export let api: AzureResourcesApiInternal;
-	}
-
-	export namespace testing {
-		export let overrideAzureServiceFactory:
-			| AzureResourcesServiceFactory
-			| undefined;
-
-		export let overrideAzureSubscriptionProvider:
-			| (() => AzureSubscriptionProvider)
-			| undefined;
-	}
-
-	export let focusedGroup: GroupingKind | undefined;
-
-	export let focusView: TreeView<unknown>;
-
-	export let focusViewTreeDataProvider: FocusViewTreeDataProvider;
-
-	export const actions = extActions;
-
-	export let experimentationService:
-		| IExperimentationServiceAdapter
-		| undefined;
+    export let experimentationService: IExperimentationServiceAdapter | undefined;
 }
 
 export type ResourceTypeGrouping = {
-	kind: "resourceType";
-
-	type: AzExtResourceType;
-};
+    kind: 'resourceType';
+    type: AzExtResourceType;
+}
 
 export type ResourceGroupGrouping = {
-	kind: "resourceGroup";
-
-	id: string;
-};
+    kind: 'resourceGroup';
+    id: string;
+}
 
 type LocationGrouping = {
-	kind: "location";
+    kind: 'location';
+    location: string;
+}
 
-	location: string;
-};
-
-export type GroupingKind =
-	| ResourceTypeGrouping
-	| ResourceGroupGrouping
-	| LocationGrouping;
+export type GroupingKind = ResourceTypeGrouping | ResourceGroupGrouping | LocationGrouping;
