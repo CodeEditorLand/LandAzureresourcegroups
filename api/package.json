@@ -1,14 +1,27 @@
 {
+	"name": "@codeeditorland/azureresources-api",
+	"version": "2.3.2",
 	"description": "Type declarations and client library for the Azure Resources extension API",
-	"devDependencies": {
-		"@types/node": "22.10.1"
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Microsoft/vscode-azureresourcegroups",
+		"directory": "api"
 	},
+	"license": "MIT",
+	"author": "Microsoft",
 	"main": "out/src/index.js",
-	"name": "@microsoft/vscode-azureresources-api",
+	"types": "dist/vscode-azureresources-api.d.ts",
 	"scripts": {
 		"api-extractor": "npm run build && api-extractor run",
 		"build": "tsc -p ./",
 		"prepack": "npm run api-extractor"
 	},
-	"types": "dist/vscode-azureresources-api.d.ts"
+	"dependencies": {},
+	"devDependencies": {
+		"@types/node": "^16.0.0",
+		"@types/vscode": "^1.64.0"
+	},
+	"peerDependencies": {
+		"@azure/ms-rest-azure-env": "^2.0.0"
+	}
 }
