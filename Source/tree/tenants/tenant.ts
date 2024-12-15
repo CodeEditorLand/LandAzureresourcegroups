@@ -1,9 +1,14 @@
 /*---------------------------------------------------------------------------------------------
-*  Copyright (c) Microsoft Corporation. All rights reserved.
-*  Licensed under the MIT License. See License.md in the project root for license information.
-*--------------------------------------------------------------------------------------------*/
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.md in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 
-import { BranchDataProvider, ResourceBase, ResourceModelBase, ResourceProvider } from "api/src";
+import {
+	BranchDataProvider,
+	ResourceBase,
+	ResourceModelBase,
+	ResourceProvider,
+} from "api/src";
 
 /**
  * Respresents a specific type of tenant resource.
@@ -16,14 +21,14 @@ export type TenantResourceType = string;
  * An indivdual root resource for a tenant.
  */
 export interface TenantResource extends ResourceBase {
-    //account?
+	//account?
 
-    /**
-         * The type of this resource.
-         *
-         * @remarks This value is used to map resources to their associated branch data provider.
-         */
-    readonly resourceType: TenantResourceType;
+	/**
+	 * The type of this resource.
+	 *
+	 * @remarks This value is used to map resources to their associated branch data provider.
+	 */
+	readonly resourceType: TenantResourceType;
 }
 
 /**
@@ -37,4 +42,6 @@ export type TenantResourceProvider = ResourceProvider<void, TenantResource>;
 /**
  * A provider for visualizing items in the workspace resource tree
  */
-export type TenantResourceBranchDataProvider<TModel extends TenantResourceModel> = BranchDataProvider<TenantResource, TModel>;
+export type TenantResourceBranchDataProvider<
+	TModel extends TenantResourceModel,
+> = BranchDataProvider<TenantResource, TModel>;
