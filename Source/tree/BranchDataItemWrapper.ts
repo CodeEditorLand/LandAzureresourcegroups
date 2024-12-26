@@ -3,176 +3,130 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { isAzExtTreeItem } from "@microsoft/vscode-azext-utils";
+import { isAzExtTreeItem } from '@microsoft/vscode-azext-utils';
 import { v4 as uuidv4 } from "uuid";
-import * as vscode from "vscode";
-
-import {
-	AzureResourceModel,
-	BranchDataProvider,
-	ResourceBase,
-	ResourceModelBase,
-	ViewPropertiesModel,
-	Wrapper,
-} from "../../api/src/index";
-import { DefaultAzureResourceBranchDataProvider } from "./azure/DefaultAzureResourceBranchDataProvider";
-import { BranchDataItemCache } from "./BranchDataItemCache";
-import { ResourceGroupsItem } from "./ResourceGroupsItem";
+import * as vscode from 'vscode';
+import { AzureResourceModel, BranchDataProvider, ResourceBase, ResourceModelBase, ViewPropertiesModel, Wrapper } from '../../api/src/index';
+import { DefaultAzureResourceBranchDataProvider } from './azure/DefaultAzureResourceBranchDataProvider';
+import { BranchDataItemCache } from './BranchDataItemCache';
+import { ResourceGroupsItem } from './ResourceGroupsItem';
 
 export type BranchDataItemOptions = {
-	contextValues?: string[];
-
-	defaultId?: string;
-
-	defaults?: vscode.TreeItem;
-
-	portalUrl?: vscode.Uri;
-
-	viewProperties?: ViewPropertiesModel;
+    contextValues?: string[];
+    defaultId?: string;
+    defaults?: vscode.TreeItem;
+    portalUrl?: vscode.Uri;
+    viewProperties?: ViewPropertiesModel;
+    idPrefix?: string;
 };
 
-function appendContextValues(
-	originalValues: string | undefined,
-	optionsValues: string[] | undefined,
-	extraValues: string[] | undefined,
-): string {
-	const set = new Set<string>(originalValues?.split(";") ?? []);
+function appendContextValues(originalValues: string | undefined, optionsValues: string[] | undefined, extraValues: string[] | undefined): string {
+    const set = new Set<string>(originalValues?.split(';') ?? []);
 
-	optionsValues?.forEach((value) => set.add(value));
+    optionsValues?.forEach(value => set.add(value));
+    extraValues?.forEach(value => set.add(value));
 
-	extraValues?.forEach((value) => set.add(value));
-
-	return Array.from(set).join(";");
+    return Array.from(set).join(';');
 }
 
 export class BranchDataItemWrapper implements ResourceGroupsItem, Wrapper {
-	static readonly hasPropertiesContextValue = "hasProperties";
+    static readonly hasPropertiesContextValue = 'hasProperties';
+    static readonly hasPortalUrlContextValue = 'hasPortalUrl';
 
-	static readonly hasPortalUrlContextValue = "hasPortalUrl";
+    constructor(
+        public branchItem: ResourceModelBase,
+        private readonly branchDataProvider: BranchDataProvider<ResourceBase, ResourceModelBase>,
+        private readonly itemCache: BranchDataItemCache,
+        private readonly options?: BranchDataItemOptions) {
 
-	constructor(
-		public branchItem: ResourceModelBase,
-		private readonly branchDataProvider: BranchDataProvider<
-			ResourceBase,
-			ResourceModelBase
-		>,
-		private readonly itemCache: BranchDataItemCache,
-		private readonly options?: BranchDataItemOptions,
-	) {
-		// do not add default provider items to the cache
-		if (
-			!(
-				this.branchDataProvider instanceof
-				DefaultAzureResourceBranchDataProvider
-			)
-		) {
-			itemCache.addBranchItem(this.branchItem, this);
-		}
+        // do not add default provider items to the cache
+        if (!(this.branchDataProvider instanceof DefaultAzureResourceBranchDataProvider)) {
+            itemCache.addBranchItem(this.branchItem, this);
+        }
 
-		// Use AzExtTreeItem.fullId as id for compatibility.
-		if (isAzExtTreeItem(this.branchItem)) {
-			this.id = this.branchItem.fullId;
-		} else {
-			this.id =
-				this.branchItem.id ?? this?.options?.defaultId ?? uuidv4();
-		}
-	}
+        // Use AzExtTreeItem.fullId as id for compatibility.
+        if (isAzExtTreeItem(this.branchItem)) {
+            this.id = this.branchItem.fullId;
+        } else {
+            this.id = this.branchItem.id ?? this?.options?.defaultId ?? uuidv4();
+        }
+        this.id = this.options?.idPrefix ? `${this.options.idPrefix}/${this.id}` : this.id;
+    }
 
-	public readonly id: string;
+    public readonly id: string;
 
-	readonly portalUrl: vscode.Uri | undefined = this.options?.portalUrl;
+    readonly portalUrl: vscode.Uri | undefined = this.options?.portalUrl;
+    readonly viewProperties?: ViewPropertiesModel = this.options?.viewProperties;
 
-	readonly viewProperties?: ViewPropertiesModel =
-		this.options?.viewProperties;
+    async getChildren(): Promise<ResourceGroupsItem[] | undefined> {
+        const children = await this.branchDataProvider.getChildren(this.branchItem);
 
-	async getChildren(): Promise<ResourceGroupsItem[] | undefined> {
-		const children = await this.branchDataProvider.getChildren(
-			this.branchItem,
-		);
+        const factory = createBranchDataItemFactory(this.itemCache);
 
-		const factory = createBranchDataItemFactory(this.itemCache);
+        // NOTE: The blind case to AzureResourceModel is a bit awkward, but I feel like it's better than
+        //       having to create specialized item types for Azure and workspace resources and their
+        //       requisite factories.
 
-		// NOTE: The blind case to AzureResourceModel is a bit awkward, but I feel like it's better than
-		//       having to create specialized item types for Azure and workspace resources and their
-		//       requisite factories.
+        return children?.map(child =>
+            factory(child, this.branchDataProvider, {
+                portalUrl: (child as AzureResourceModel).portalUrl,
+                viewProperties: (child as AzureResourceModel).viewProperties,
+                // recursively prefix child items with the account and tenant id
+                // this ensures that items provided by branch data providers are prefixed
+                idPrefix: this.options?.idPrefix,
+            })
+        );
+    }
 
-		return children?.map((child) =>
-			factory(child, this.branchDataProvider, {
-				portalUrl: (child as AzureResourceModel).portalUrl,
-				viewProperties: (child as AzureResourceModel).viewProperties,
-			}),
-		);
-	}
+    async getTreeItem(): Promise<vscode.TreeItem> {
+        const treeItem = await this.branchDataProvider.getTreeItem(this.branchItem);
+        // set the id of the tree item to the id of the branch item
+        // we do this because the branch item has already modified the item's id (see constructor)
+        treeItem.id = this.id;
 
-	async getTreeItem(): Promise<vscode.TreeItem> {
-		const treeItem = await this.branchDataProvider.getTreeItem(
-			this.branchItem,
-		);
+        const contextValue = appendContextValues(treeItem.contextValue, this.options?.contextValues, this.getExtraContextValues());
 
-		const contextValue = appendContextValues(
-			treeItem.contextValue,
-			this.options?.contextValues,
-			this.getExtraContextValues(),
-		);
+        return {
+            ...this.options?.defaults ?? {},
+            ...treeItem,
+            contextValue
+        };
+    }
 
-		return {
-			...(this.options?.defaults ?? {}),
-			...treeItem,
-			contextValue,
-		};
-	}
+    async getParent(): Promise<ResourceGroupsItem | undefined> {
+        if (this.branchDataProvider.getParent) {
+            const branchItem = await this.branchDataProvider.getParent(this.branchItem);
+            if (branchItem) {
+                return this.itemCache.getItemForBranchItem(branchItem);
+            }
+        }
 
-	async getParent(): Promise<ResourceGroupsItem | undefined> {
-		if (this.branchDataProvider.getParent) {
-			const branchItem = await this.branchDataProvider.getParent(
-				this.branchItem,
-			);
+        return undefined;
+    }
 
-			if (branchItem) {
-				return this.itemCache.getItemForBranchItem(branchItem);
-			}
-		}
+    unwrap<T>(): T {
+        return this.branchItem as T;
+    }
 
-		return undefined;
-	}
-
-	unwrap<T>(): T {
-		return this.branchItem as T;
-	}
-
-	protected getExtraContextValues(): string[] {
-		const extraValues: string[] = [];
-
-		if (this.portalUrl) {
-			extraValues.push(BranchDataItemWrapper.hasPortalUrlContextValue);
-		}
-
-		if (this.viewProperties) {
-			extraValues.push(BranchDataItemWrapper.hasPropertiesContextValue);
-		}
-
-		return extraValues;
-	}
+    protected getExtraContextValues(): string[] {
+        const extraValues: string[] = [];
+        if (this.portalUrl) {
+            extraValues.push(BranchDataItemWrapper.hasPortalUrlContextValue);
+        }
+        if (this.viewProperties) {
+            extraValues.push(BranchDataItemWrapper.hasPropertiesContextValue);
+        }
+        return extraValues;
+    }
 }
 
-export type BranchDataItemFactory = (
-	branchItem: ResourceModelBase,
-	branchDataProvider: BranchDataProvider<ResourceBase, ResourceModelBase>,
-	options?: BranchDataItemOptions,
-) => BranchDataItemWrapper;
+export type BranchDataItemFactory = (branchItem: ResourceModelBase, branchDataProvider: BranchDataProvider<ResourceBase, ResourceModelBase>, options?: BranchDataItemOptions) => BranchDataItemWrapper;
 
-export function createBranchDataItemFactory(
-	itemCache: BranchDataItemCache,
-): BranchDataItemFactory {
-	return (branchItem, branchDataProvider, options) =>
-		itemCache.createOrGetItem(
-			branchItem,
-			() =>
-				new BranchDataItemWrapper(
-					branchItem,
-					branchDataProvider,
-					itemCache,
-					options,
-				),
-		);
+export function createBranchDataItemFactory(itemCache: BranchDataItemCache): BranchDataItemFactory {
+    return (branchItem, branchDataProvider, options) =>
+        itemCache.createOrGetItem(
+            branchItem,
+            () => new BranchDataItemWrapper(branchItem, branchDataProvider, itemCache, options),
+            `${options?.idPrefix ?? ''}${branchItem.id}`,
+        )
 }
